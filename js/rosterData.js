@@ -19,10 +19,9 @@ const farmingRoadmap = [
       { name: "Slave I", id: "SLAVE1", targetStars: 7, icon: `${SHIP_PATH}SLAVE1.webp` },
       { name: "IG-2000", id: "IG2000", targetStars: 7, icon: `${SHIP_PATH}IG2000.webp` },
       { name: "Hound's Tooth", id: "HOUNDSTOOTH", targetStars: 7, icon: `${SHIP_PATH}HOUNDSTOOTH.webp` },
-      { name: "Imperial TIE Bomber", id: "IMPERIALTIEBOMBER", targetStars: 7, icon: `${SHIP_PATH}TIEBOMBERIMPERIAL.webp` },
+      { name: "Imperial TIE Bomber", id: "TIEBOMBERIMPERIAL", targetStars: 7, icon: `${SHIP_PATH}TIEBOMBERIMPERIAL.webp` },
       { name: "TIE Advanced x1", id: "TIEADVANCED", targetStars: 7, icon: `${SHIP_PATH}TIEADVANCED.webp` },
-      { name: "Imperial TIE Fighter", id: "TIEFIGHTER", targetStars: 7, icon: `${SHIP_PATH}TIEFIGHTERIMPERIAL.webp` }
-    ]
+      { name: "Imperial TIE Fighter", id: "TIEFIGHTERIMPERIAL", targetStars: 7, icon: `${SHIP_PATH}TIEFIGHTERIMPERIAL.webp` }]
   },
   {
     category: "👑 Phase 2: Galactic Legend Leia Organa",
