@@ -1,3 +1,17 @@
+// On DOM content loaded, handle URL query parameters for ally code
+document.addEventListener('DOMContentLoaded', () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const allyCodeParam = urlParams.get('allycode');
+
+  if (allyCodeParam) {
+    const allyInput = document.getElementById('allyCode');
+    if (allyInput) {
+      allyInput.value = allyCodeParam;
+      fetchRoster(); // Automatically sync roster if param exists
+    }
+  }
+});
+
 async function fetchRoster() {
   const allyInput = document.getElementById('allyCode');
   const allyCode = allyInput.value.replace(/-/g, '').trim();
@@ -11,6 +25,10 @@ async function fetchRoster() {
     showError("Please enter a valid 9-digit SWGoH Ally Code.");
     return;
   }
+
+  // Update URL query parameter seamlessly without triggering a page reload
+  const newUrl = `${window.location.pathname}?allycode=${allyCode}`;
+  window.history.pushState({ path: newUrl }, '', newUrl);
 
   spinner.style.display = 'inline-block';
   btnText.textContent = "SYNCING...";
@@ -89,17 +107,11 @@ function renderDashboard(playerData) {
         const currentRelic = (unit && unit.relic_tier > 2) ? unit.relic_tier - 2 : 0;
         const currentGear = unit ? unit.gear_level : 0;
 
-        // FIXED ICON PRIORITY:
-        // 1. Explicit target.icon (defined in rosterData.js)
-        // 2. unit.image from API (if valid)
-        // 3. Guaranteed fallback SVG (Base64)
         let iconUrl = target.icon;
-        
         if (!iconUrl && unit && unit.image) {
           iconUrl = unit.image;
         }
 
-        // Guaranteed Base64 fallback so browser errors NEVER break the layout or loop
         const svgFallback = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 24 24' fill='none' stroke='%238b949e' stroke-width='2'><circle cx='12' cy='12' r='10'/><path d='M12 8v4M12 16h.01'/></svg>";
 
         let isComplete = false;
@@ -156,12 +168,27 @@ function renderDashboard(playerData) {
 
     const phasePercent = phaseTotalCount > 0 ? Math.round((phaseMetCount / phaseTotalCount) * 100) : 0;
 
+    // Header element with collapsible functionality
     const phaseHeader = document.createElement('div');
     phaseHeader.className = 'phase-header';
+    phaseHeader.style.cursor = 'pointer';
     phaseHeader.innerHTML = `
-      <div class="phase-title">${phase.category}</div>
+      <div class="phase-title">
+        <span class="collapse-icon" style="display:inline-block; transition: transform 0.2s; margin-right: 8px;">▼</span>
+        ${phase.category}
+      </div>
       <div class="phase-badge">${phaseMetCount} / ${phaseTotalCount} Ready (${phasePercent}%)</div>
     `;
+
+    // Toggle collapse state on header click
+    phaseHeader.addEventListener('click', () => {
+      const isCollapsed = sectionsContainer.style.display === 'none';
+      sectionsContainer.style.display = isCollapsed ? 'block' : 'none';
+      const icon = phaseHeader.querySelector('.collapse-icon');
+      if (icon) {
+        icon.style.transform = isCollapsed ? 'rotate(0deg)' : 'rotate(-90deg)';
+      }
+    });
 
     phaseBlock.appendChild(phaseHeader);
     phaseBlock.appendChild(sectionsContainer);
