@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Redirecting…</title>
+  <script>
+    // GitHub Pages has no SPA rewrite, so deep links land here. Stash the
+    // requested route and hand it back to the app from index.html.
+    // BASE must match the `base` option in vite.config.js.
+    (function () {
+      var BASE = '/Swgoh-Farming-Assistant/';
+      var target = location.pathname + location.search + location.hash;
+      sessionStorage.setItem('spaRedirect', target);
+      location.replace(BASE);
+    })();
+  </script>
+</head>
+<body></body>
+</html>

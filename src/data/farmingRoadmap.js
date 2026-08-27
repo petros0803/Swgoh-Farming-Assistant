@@ -4,6 +4,7 @@ const SHIP_PATH = `${import.meta.env.BASE_URL}assets/ships/`;
 export const farmingRoadmap = [
   {
     category: '🚀 Phase 1: Executor Fleet Priority (#1 Focus)',
+    reward: { name: 'Executor', icon: `${SHIP_PATH}CAPITALEXECUTOR.webp` },
     characters: [
       { name: 'Admiral Piett', id: 'ADMIRALPIETT', alignment: 'dark', targetR: 8, targetStars: 7, icon: `${CHAR_PATH}Admiral Piett.png` },
       { name: 'Boba Fett', id: 'BOBAFETT', alignment: 'dark', targetR: 8, targetStars: 7, icon: `${CHAR_PATH}Boba Fett.png` },
@@ -25,6 +26,7 @@ export const farmingRoadmap = [
   },
   {
     category: '👑 Phase 2: Galactic Legend Leia Organa',
+    reward: { name: 'Leia Organa', icon: `${CHAR_PATH}Leia Organa.png` },
     characters: [
       { name: 'Captain Rex', id: 'CAPTAINREX', alignment: 'light', targetR: 7, targetStars: 7, icon: `${CHAR_PATH}Captain Rex.png` },
       { name: 'Princess Kneesaa', id: 'PRINCESSKNEESAA', alignment: 'light', targetR: 7, targetStars: 7, icon: `${CHAR_PATH}Princess Kneesaa.png` },
@@ -46,6 +48,7 @@ export const farmingRoadmap = [
   },
   {
     category: '🧸 Prerequisite: C-3PO Event (Any 5 Ewoks)',
+    reward: { name: 'C-3PO', icon: `${CHAR_PATH}C-3PO.png` },
     characters: [
       { name: 'Princess Kneesaa', id: 'PRINCESSKNEESAA', alignment: 'light', targetR: 7, targetStars: 7, icon: `${CHAR_PATH}Princess Kneesaa.png` },
       { name: 'Chief Chirpa', id: 'CHIEFCHIRPA', alignment: 'light', targetR: 7, targetStars: 7, icon: `${CHAR_PATH}Chief Chirpa.png` },
@@ -60,6 +63,7 @@ export const farmingRoadmap = [
   },
   {
     category: '⚔️ Phase 3: Jedi Knight Luke Skywalker (JKL)',
+    reward: { name: 'Jedi Knight Luke Skywalker', icon: `${CHAR_PATH}Jedi Knight Luke Skywalker.png` },
     characters: [
       { name: 'Wampa', id: 'WAMPA', alignment: 'dark', targetR: 3, targetStars: 7, icon: `${CHAR_PATH}Wampa.png` },
       { name: 'Commander Luke Skywalker', id: 'COMMANDERLUKESKYWALKER', alignment: 'light', targetR: 3, targetStars: 7, icon: `${CHAR_PATH}Commander Luke Skywalker.png` },
@@ -78,6 +82,7 @@ export const farmingRoadmap = [
   },
   {
     category: '🐷 Phase 4: Galactic Legend Jabba The Hutt',
+    reward: { name: 'Jabba the Hutt', icon: `${CHAR_PATH}Jabba the Hutt.png` },
     characters: [
       { name: 'Han Solo', id: 'HANSOLO', alignment: 'light', targetR: 8, targetStars: 7, icon: `${CHAR_PATH}Han Solo.png` },
       { name: 'Greedo', id: 'GREEDO', alignment: 'dark', targetR: 6, targetStars: 7, icon: `${CHAR_PATH}Greedo.png` },

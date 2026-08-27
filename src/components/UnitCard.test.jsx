@@ -35,4 +35,21 @@ describe('UnitCard', () => {
     expect(screen.getByText('Also in JKL')).toBeInTheDocument();
     expect(screen.getByText('Ready')).toBeInTheDocument();
   });
+
+  it('lists every other farm in the shared tag tooltip', () => {
+    const shared = {
+      ...unit,
+      badge: {
+        text: 'Also in CLS +1',
+        className: 'tag-shared',
+        farms: ['⭐ Journey: Commander Luke Skywalker', '👑 Galactic Legend: Leia Organa']
+      }
+    };
+
+    renderWithTheme(<UnitCard unit={shared} />);
+
+    const tooltip = screen.getByRole('tooltip', { hidden: true });
+    expect(tooltip).toHaveTextContent('⭐ Journey: Commander Luke Skywalker');
+    expect(tooltip).toHaveTextContent('👑 Galactic Legend: Leia Organa');
+  });
 });

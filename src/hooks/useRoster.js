@@ -1,24 +1,19 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { fetchPlayerRoster } from '../services/swgohApi';
 import { normalizeAllyCode } from '../utils/format';
 
-function readAllyCodeFromUrl() {
-  return new URLSearchParams(window.location.search).get('allycode') || '';
-}
-
-function writeAllyCodeToUrl(allyCode) {
-  const next = new URL(window.location.href);
-  next.searchParams.set('allycode', allyCode);
-  window.history.pushState({ path: next.pathname + next.search }, '', next.pathname + next.search);
-}
-
 export function useRoster() {
-  const [allyCode, setAllyCode] = useState(() => readAllyCodeFromUrl());
+  const [searchParams, setSearchParams] = useSearchParams();
+  const allyCodeFromUrl = useRef(searchParams.get('allycode') || '');
+  const hasAutoSynced = useRef(false);
+
+  const [allyCode, setAllyCode] = useState(allyCodeFromUrl.current);
   const [playerData, setPlayerData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const syncRoster = useCallback(async (rawCode = allyCode) => {
+  const syncRoster = useCallback(async (rawCode) => {
     const code = normalizeAllyCode(rawCode);
     setError('');
     setLoading(true);
@@ -26,23 +21,30 @@ export function useRoster() {
     try {
       const data = await fetchPlayerRoster(code);
       setPlayerData(data);
-      writeAllyCodeToUrl(code);
       setAllyCode(code);
+      setSearchParams(
+        (current) => {
+          const next = new URLSearchParams(current);
+          next.set('allycode', code);
+          return next;
+        },
+        { replace: true }
+      );
     } catch (err) {
       setError(err.message || 'Unable to sync roster.');
     } finally {
       setLoading(false);
     }
-  }, [allyCode]);
+  }, [setSearchParams]);
 
   useEffect(() => {
-    const fromUrl = readAllyCodeFromUrl();
-    if (fromUrl) {
-      syncRoster(fromUrl);
+    if (hasAutoSynced.current) return;
+    hasAutoSynced.current = true;
+
+    if (allyCodeFromUrl.current) {
+      syncRoster(allyCodeFromUrl.current);
     }
-    // Load once from the URL on mount.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [syncRoster]);
 
   return {
     allyCode,

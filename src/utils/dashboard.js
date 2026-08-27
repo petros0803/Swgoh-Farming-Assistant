@@ -52,6 +52,8 @@ export function buildDashboard(playerData, roadmap = farmingRoadmap) {
     return {
       index: phaseIndex,
       category: phase.category,
+      note: phase.note ?? null,
+      reward: phase.reward ?? null,
       isC3po: phase.category.includes('C-3PO Event'),
       sections,
       met,

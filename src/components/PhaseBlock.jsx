@@ -10,6 +10,9 @@ export default function PhaseBlock({ phase, expanded, onToggle }) {
       <Toggle type="button" aria-expanded={expanded} onClick={onToggle}>
         <Title>
           <Chevron aria-hidden="true">▼</Chevron>
+          {phase.reward?.icon && (
+            <Portrait src={phase.reward.icon} alt={phase.reward.name} loading="lazy" />
+          )}
           {phase.category}
         </Title>
         <Meta>
@@ -22,6 +25,7 @@ export default function PhaseBlock({ phase, expanded, onToggle }) {
 
       {expanded && (
         <Sections>
+          {phase.note && <Note>{phase.note}</Note>}
           {phase.sections.map((section) => (
             <div key={section.title}>
               <Subtitle>
@@ -45,12 +49,13 @@ const Block = styled.section`
   background: ${({ theme }) => theme.colors.card};
   border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: ${({ theme }) => theme.radii.lg};
-  overflow: hidden;
   box-shadow: ${({ theme }) => theme.shadows.card};
 `;
 
 const Toggle = styled.button`
   width: 100%;
+  border-top-left-radius: inherit;
+  border-top-right-radius: inherit;
   min-height: ${({ theme }) => theme.sizes.tap};
   padding: ${({ theme }) => `${theme.space[8]} ${theme.space[11]}`};
   background-color: ${({ theme }) => theme.colors.raised};
@@ -100,6 +105,16 @@ const Chevron = styled.span`
   }
 `;
 
+const Portrait = styled.img`
+  width: ${({ theme }) => theme.sizes.phasePortrait};
+  height: ${({ theme }) => theme.sizes.phasePortrait};
+  border-radius: ${({ theme }) => theme.radii.sm};
+  border: 1px solid ${({ theme }) => theme.colors.gold};
+  background-color: ${({ theme }) => theme.colors.bg};
+  object-fit: cover;
+  flex-shrink: 0;
+`;
+
 const Meta = styled.span`
   display: flex;
   align-items: center;
@@ -141,6 +156,16 @@ const Sections = styled.div`
   ${({ theme }) => theme.media.phone} {
     padding: ${({ theme }) => theme.space[8]};
   }
+`;
+
+const Note = styled.p`
+  font-size: ${({ theme }) => theme.fontSizes.md};
+  line-height: ${({ theme }) => theme.lineHeights.relaxed};
+  color: ${({ theme }) => theme.colors.muted};
+  background: ${({ theme }) => theme.colors.infoSoft};
+  border: 1px solid ${({ theme }) => theme.colors.sharedBorder};
+  border-radius: ${({ theme }) => theme.radii.md};
+  padding: ${({ theme }) => `${theme.space[6]} ${theme.space[8]}`};
 `;
 
 const Subtitle = styled.h3`

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import { MAX_STARS } from '../utils/unitProgress';
 import ProgressTrack from './ui/ProgressTrack';
+import SharedTag from './SharedTag';
 
 const FALLBACK =
   "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 24 24' fill='none' stroke='%238b949e' stroke-width='2'><circle cx='12' cy='12' r='10'/><path d='M12 8v4M12 16h.01'/></svg>";
@@ -49,7 +50,7 @@ export default function UnitCard({ unit }) {
       </Body>
 
       <Footer>
-        {badge && <Tag $kind={badge.className === 'tag-recommended' ? 'recommended' : 'shared'}>{badge.text}</Tag>}
+        {badge && <SharedTag badge={badge} />}
         <Status $status={progress.statusClass}>{progress.statusText}</Status>
       </Footer>
     </Card>
@@ -75,6 +76,12 @@ const Card = styled.article`
   position: relative;
   min-width: 0;
   transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+
+  /* Lift the card so an open shared-unit tooltip is not covered by its neighbours. */
+  &:hover,
+  &:focus-within {
+    z-index: 1;
+  }
 
   &:hover {
     transform: translateY(-2px);
@@ -187,16 +194,6 @@ const Footer = styled.div`
   justify-content: space-between;
   gap: ${({ theme }) => theme.space[4]};
   flex-wrap: wrap;
-`;
-
-const Tag = styled.span`
-  font-size: ${({ theme }) => theme.fontSizes.xs};
-  font-weight: ${({ theme }) => theme.fontWeights.semibold};
-  padding: ${({ theme }) => `${theme.space[2]} 7px`};
-  border-radius: ${({ theme }) => theme.radii.sm};
-  background: ${({ theme, $kind }) => ($kind === 'recommended' ? theme.colors.recommendedBg : theme.colors.sharedBg)};
-  color: ${({ theme, $kind }) => ($kind === 'recommended' ? theme.colors.recommendedText : theme.colors.blue)};
-  border: 1px solid ${({ theme, $kind }) => ($kind === 'recommended' ? theme.colors.recommendedBorder : theme.colors.sharedBorder)};
 `;
 
 const Status = styled.span`

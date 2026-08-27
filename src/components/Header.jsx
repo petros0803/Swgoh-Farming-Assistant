@@ -1,9 +1,17 @@
+import { NavLink, useLocation } from 'react-router-dom';
 import Button from './ui/Button';
 import TextField from './ui/TextField';
 import ThemeSwitch from './ThemeSwitch';
 import styled from 'styled-components';
 
+const NAV_ITEMS = [
+  { to: '/', label: '🗺️ My Roadmap' },
+  { to: '/all-farms', label: '📜 All Farms' }
+];
+
 export default function Header({ allyCode, onAllyCodeChange, onSync, loading }) {
+  const { search } = useLocation();
+
   function handleSubmit(event) {
     event.preventDefault();
     onSync();
@@ -37,6 +45,13 @@ export default function Header({ allyCode, onAllyCodeChange, onSync, loading }) 
             </Button>
           </Form>
         </Actions>
+        <Nav aria-label="Primary">
+          {NAV_ITEMS.map((item) => (
+            <NavTab key={item.to} to={{ pathname: item.to, search }} end>
+              {item.label}
+            </NavTab>
+          ))}
+        </Nav>
       </Inner>
     </Bar>
   );
@@ -126,6 +141,51 @@ const Actions = styled.div`
     width: 100%;
     flex-direction: column;
     align-items: flex-end;
+  }
+`;
+
+const Nav = styled.nav`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.space[5]};
+  flex-wrap: wrap;
+  padding-top: ${({ theme }) => theme.space[7]};
+  border-top: 1px solid ${({ theme }) => theme.colors.border};
+`;
+
+const NavTab = styled(NavLink)`
+  display: inline-flex;
+  align-items: center;
+  min-height: ${({ theme }) => theme.sizes.tap};
+  padding: ${({ theme }) => `${theme.space[3]} ${theme.space[7]}`};
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: ${({ theme }) => theme.radii.pill};
+  background-color: ${({ theme }) => theme.colors.sunken};
+  color: ${({ theme }) => theme.colors.muted};
+  font-family: ${({ theme }) => theme.fonts.heading};
+  font-size: ${({ theme }) => theme.fontSizes.base};
+  font-weight: ${({ theme }) => theme.fontWeights.semibold};
+  letter-spacing: ${({ theme }) => theme.letterSpacing.wide};
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.text};
+    border-color: ${({ theme }) => theme.colors.borderStrong};
+    background-color: ${({ theme }) => theme.colors.hover};
+  }
+
+  &.active {
+    color: ${({ theme }) => theme.colors.gold};
+    border-color: ${({ theme }) => theme.colors.gold};
+    background-color: ${({ theme }) => theme.colors.infoSoft};
+  }
+
+  ${({ theme }) => theme.media.phone} {
+    flex: 1 1 auto;
+    justify-content: center;
   }
 `;
 

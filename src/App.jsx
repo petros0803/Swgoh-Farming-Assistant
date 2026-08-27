@@ -1,56 +1,27 @@
-import { useMemo, useState } from 'react';
 import styled from 'styled-components';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import Header from './components/Header';
-import StatsOverview from './components/StatsOverview';
-import Toolbar from './components/Toolbar';
-import Roadmap from './components/Roadmap';
-import ErrorBanner from './components/ErrorBanner';
 import Footer from './components/Footer';
-import Placeholder from './components/ui/Placeholder';
+import RosterProvider from './context/RosterProvider';
+import { useRosterState } from './context/rosterContext';
+import AllFarmsPage from './pages/AllFarmsPage';
+import RoadmapPage from './pages/RoadmapPage';
 import { ThemeRoot } from './theme';
-import { useRoster } from './hooks/useRoster';
-import { buildDashboard } from './utils/dashboard';
-import { filterPhases } from './utils/filters';
 
 export default function App() {
   return (
     <ThemeRoot>
-      <AppShell />
+      <BrowserRouter basename={import.meta.env.BASE_URL}>
+        <RosterProvider>
+          <AppShell />
+        </RosterProvider>
+      </BrowserRouter>
     </ThemeRoot>
   );
 }
 
 function AppShell() {
-  const { allyCode, setAllyCode, playerData, loading, error, syncRoster } = useRoster();
-  const [query, setQuery] = useState('');
-  const [hideCompleted, setHideCompleted] = useState(false);
-  const [collapsed, setCollapsed] = useState({});
-  const [allCollapsed, setAllCollapsed] = useState(false);
-
-  const dashboard = useMemo(
-    () => (playerData ? buildDashboard(playerData) : null),
-    [playerData]
-  );
-
-  const filtered = useMemo(() => {
-    if (!dashboard) return { phases: [], visibleTotal: 0 };
-    return filterPhases(dashboard.phases, query, hideCompleted);
-  }, [dashboard, query, hideCompleted]);
-
-  function handleTogglePhase(index) {
-    setCollapsed((current) => ({ ...current, [index]: !current[index] }));
-  }
-
-  function handleToggleAll() {
-    const next = !allCollapsed;
-    setAllCollapsed(next);
-    if (!dashboard) return;
-    const nextMap = {};
-    dashboard.phases.forEach((phase) => {
-      nextMap[phase.index] = next;
-    });
-    setCollapsed(nextMap);
-  }
+  const { allyCode, setAllyCode, syncRoster, loading } = useRosterState();
 
   return (
     <>
@@ -61,30 +32,11 @@ function AppShell() {
         loading={loading}
       />
       <Main>
-        {dashboard && <StatsOverview dashboard={dashboard} />}
-        {dashboard && (
-          <Toolbar
-            query={query}
-            onQueryChange={setQuery}
-            hideCompleted={hideCompleted}
-            onHideCompletedChange={setHideCompleted}
-            allCollapsed={allCollapsed}
-            onToggleAll={handleToggleAll}
-          />
-        )}
-        <ErrorBanner message={error} />
-        {!dashboard && !error && (
-          <Placeholder title="Enter your SWGoH Ally Code above to load your live roster status!">
-            This web application connects directly to your public SWGoH profile to evaluate every target unit across all phases of your roadmap.
-          </Placeholder>
-        )}
-        {dashboard && (
-          <Roadmap
-            phases={filtered.phases}
-            collapsed={collapsed}
-            onTogglePhase={handleTogglePhase}
-          />
-        )}
+        <Routes>
+          <Route path="/" element={<RoadmapPage />} />
+          <Route path="/all-farms" element={<AllFarmsPage />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
       </Main>
       <Footer />
     </>
