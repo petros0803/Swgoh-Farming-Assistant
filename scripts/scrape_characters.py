@@ -104,6 +104,7 @@ async def scrape_dynamic_page(url, output_folder):
 if __name__ == "__main__":
     asyncio.run(
         scrape_dynamic_page(
-            "https://ahnaldt101.com/swgoh/characters", "swgoh_characters"
+            "https://ahnaldt101.com/swgoh/characters",
+            os.path.join("..", "public", "assets", "characters"),
         )
     )

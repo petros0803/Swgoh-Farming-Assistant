@@ -2,71 +2,16 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark light" />
+  <meta name="theme-color" content="#0d1117" />
   <title>SWGoH Master Farming Tracker</title>
-  <link rel="stylesheet" href="css/styles.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400..700&family=Inter:wght@400..700&display=swap" rel="stylesheet">
 </head>
 <body>
-
-  <header class="app-header">
-    <div class="header-container">
-      <div class="logo-area">
-        <span class="logo-icon">⚔️</span>
-        <div>
-          <h1>SWGoH HOLOCRON TRACKER</h1>
-          <p class="subtitle">Executor ➔ Leia ➔ JKL ➔ Jabba Command Hub</p>
-        </div>
-      </div>
-      <div class="search-box">
-        <input type="text" id="allyCode" placeholder="Ally Code (e.g. 123456789)" maxlength="11">
-        <button id="syncBtn" onclick="fetchRoster()">
-          <span class="btn-text">SYNC ROSTER</span>
-          <span class="spinner" id="spinner"></span>
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <main class="main-container">
-
-    <!-- Overview Stats Bar -->
-    <section class="stats-overview" id="statsOverview" style="display: none;">
-      <div class="stat-card">
-        <span class="stat-label">Player Name</span>
-        <span class="stat-value" id="playerName">-</span>
-      </div>
-      <div class="stat-card">
-        <span class="stat-label">Galactic Power</span>
-        <span class="stat-value" id="playerGP">-</span>
-      </div>
-      <div class="stat-card">
-        <span class="stat-label">Overall Farm Progress</span>
-        <span class="stat-value" id="overallProgress">0%</span>
-        <div class="progress-bar-bg"><div class="progress-bar-fill" id="overallFill" style="width:0%"></div></div>
-      </div>
-    </section>
-
-    <!-- Error Banner -->
-    <div id="errorBanner" class="error-banner" style="display:none;"></div>
-
-    <!-- Interactive Mind Map Dashboard -->
-    <section id="roadmapContainer" class="roadmap-grid">
-      <div class="placeholder-notice">
-        <h2>Enter your SWGoH Ally Code above to load your live roster status!</h2>
-        <p>This web application connects directly to your public SWGoH profile to evaluate every target unit across all phases of your roadmap.</p>
-      </div>
-    </section>
-
-  </main>
-
-  <footer class="app-footer">
-    <p>Powered by SWGoH.gg API • Hosted on GitHub Pages</p>
-  </footer>
-
-  <script src="js/rosterData.js"></script>
-  <script src="js/app.js"></script>
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
 </body>
 </html>

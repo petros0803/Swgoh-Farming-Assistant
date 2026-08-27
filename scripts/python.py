@@ -92,6 +92,10 @@ def scrape_swgoh_page(url, output_folder):
 
 if __name__ == "__main__":
     scrape_swgoh_page(
-        "https://ahnaldt101.com/swgoh/characters", "swgoh_characters"
+        "https://ahnaldt101.com/swgoh/characters",
+        os.path.join("..", "public", "assets", "characters"),
     )
-    scrape_swgoh_page("https://ahnaldt101.com/swgoh/ships", "swgoh_ships")
+    scrape_swgoh_page(
+        "https://ahnaldt101.com/swgoh/ships",
+        os.path.join("..", "public", "assets", "ships"),
+    )
