@@ -1,3 +1,45 @@
+/** Community shorthand, so shared-unit tags stay readable inside a card. */
+const TAG_ABBREVIATIONS = {
+  'commander luke skywalker': 'CLS',
+  'jedi knight luke skywalker': 'JKLS',
+  'jedi master luke skywalker': 'JMLS',
+  'jedi master kenobi': 'JMK',
+  'jedi master mace windu': 'JMMW',
+  'supreme leader kylo ren': 'SLKR',
+  'sith eternal emperor': 'SEE',
+  'pirate king hondo ohnaka': 'GL Hondo',
+  'general skywalker': 'GAS',
+  'jedi knight revan': 'JKR',
+  'jedi knight cal kestis': 'JKCK',
+  'grand master yoda': 'GMY',
+  'grand admiral thrawn': 'GAT',
+  'grand inquisitor': 'Inquisitor',
+  "han's millennium falcon": 'HMF',
+  'emperor palpatine': 'Palpatine'
+};
+
+const TAG_MAX_LENGTH = 18;
+const MINOR_WORDS = ['the', 'of', 'and', 'a'];
+
+/** Falls back to initials so future long names shorten without a map entry. */
+function toInitials(name) {
+  const initials = name
+    .replace(/\([^)]*\)/g, ' ')
+    .split(/[\s-]+/)
+    .filter((word) => /^[a-z0-9]/i.test(word) && !MINOR_WORDS.includes(word.toLowerCase()))
+    .map((word) => word[0].toUpperCase())
+    .join('');
+
+  return initials.length >= 2 ? initials : name;
+}
+
+export function abbreviatePhaseName(name) {
+  const mapped = TAG_ABBREVIATIONS[name.trim().toLowerCase()];
+  if (mapped) return mapped;
+
+  return name.length > TAG_MAX_LENGTH ? toInitials(name) : name;
+}
+
 export function shortPhaseName(category) {
   const label = (category.split(':')[1] || category).trim();
   const parenthetical = label.match(/\(([^)]+)\)/);
@@ -30,7 +72,12 @@ export function buildSharedUnitMap(roadmap) {
           unitOccurrences[id] = [];
         }
         if (!unitOccurrences[id].some((p) => p.index === phaseIdx)) {
-          unitOccurrences[id].push({ index: phaseIdx, name: shortName });
+          unitOccurrences[id].push({
+            index: phaseIdx,
+            name: shortName,
+            tag: abbreviatePhaseName(shortName),
+            label: phase.category
+          });
         }
       });
     };
@@ -45,10 +92,10 @@ export function buildSharedUnitMap(roadmap) {
 export function resolveBadge(phase, targetId, currentPhaseIndex, sharedMap) {
   if (phase.category.includes('C-3PO Event')) {
     if (['PRINCESSKNEESAA', 'CHIEFCHIRPA', 'WICKET'].includes(targetId)) {
-      return { text: 'Shared with GL Leia', className: 'tag-shared' };
+      return { text: 'Shared with GL Leia', className: 'tag-shared', farms: [] };
     }
     if (['LOGRAY', 'EWOKELDER', 'PAPLOO'].includes(targetId)) {
-      return { text: '★ Recommended', className: 'tag-recommended' };
+      return { text: '★ Recommended', className: 'tag-recommended', farms: [] };
     }
     return null;
   }
@@ -56,7 +103,11 @@ export function resolveBadge(phase, targetId, currentPhaseIndex, sharedMap) {
   const otherPhases = (sharedMap[targetId] || []).filter((p) => p.index !== currentPhaseIndex);
   if (otherPhases.length > 0) {
     const extra = otherPhases.length > 1 ? ` +${otherPhases.length - 1}` : '';
-    return { text: `Also in ${otherPhases[0].name}${extra}`, className: 'tag-shared' };
+    return {
+      text: `Also in ${otherPhases[0].tag ?? otherPhases[0].name}${extra}`,
+      className: 'tag-shared',
+      farms: otherPhases.map((p) => p.label ?? p.name)
+    };
   }
 
   return null;

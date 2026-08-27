@@ -118,6 +118,7 @@ function galacticDark(fontSizes) {
     sizes: {
       tap: '44px',
       portrait: '46px',
+      phasePortrait: '32px',
       spinner: '15px',
       swatch: '10px',
       inputMin: '180px',

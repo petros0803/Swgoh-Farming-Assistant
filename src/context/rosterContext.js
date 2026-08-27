@@ -1,0 +1,15 @@
+import { createContext, useContext } from 'react';
+
+export const RosterContext = createContext({
+  allyCode: '',
+  setAllyCode: () => {},
+  playerData: null,
+  loading: false,
+  error: '',
+  clearError: () => {},
+  syncRoster: () => {}
+});
+
+export function useRosterState() {
+  return useContext(RosterContext);
+}

@@ -12,7 +12,7 @@ const playerPayload = {
 
 describe('App', () => {
   beforeEach(() => {
-    window.history.pushState({}, '', '/');
+    window.history.pushState({}, '', import.meta.env.BASE_URL);
     window.localStorage.clear();
     globalThis.fetch = vi.fn(async () => ({
       ok: true,
@@ -34,6 +34,28 @@ describe('App', () => {
     expect(screen.getByText('9,123,456')).toBeInTheDocument();
     expect(screen.getByText('Admiral Piett')).toBeInTheDocument();
     expect(screen.getByPlaceholderText('Filter units by name…')).toBeInTheDocument();
+  });
+
+  it('navigates to the all farms page and keeps the synced roster', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    await user.type(screen.getByLabelText('Ally Code'), '123456789');
+    await user.click(screen.getByRole('button', { name: /sync roster/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText('Bogdan')).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByRole('link', { name: /all farms/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText(/Galactic Legend: Leia Organa/)).toBeInTheDocument();
+    });
+
+    // The roster survives the route change, so stats stay rendered.
+    expect(screen.getByText('Bogdan')).toBeInTheDocument();
+    expect(screen.getByText(/Journey: Grand Master Yoda/)).toBeInTheDocument();
   });
 
   it('starts dark and persists a light theme choice', async () => {
