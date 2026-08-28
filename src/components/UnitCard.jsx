@@ -1,18 +1,32 @@
 import { useState } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+import { useFarmPreview } from '../hooks/useFarmPreview';
+import { requirementLabel } from '../utils/farmLabels';
 import { MAX_STARS } from '../utils/unitProgress';
 import ProgressTrack from './ui/ProgressTrack';
 import SharedTag from './SharedTag';
+import { FarmPreview } from './UnitFarmCard';
 
 const FALLBACK =
   "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 24 24' fill='none' stroke='%238b949e' stroke-width='2'><circle cx='12' cy='12' r='10'/><path d='M12 8v4M12 16h.01'/></svg>";
 
-export default function UnitCard({ unit }) {
-  const { target, progress, badge, portrait } = unit;
+export default function UnitCard({ unit, guide, goalName }) {
+  const { target, progress, badge, recommended, portrait } = unit;
   const [src, setSrc] = useState(portrait || FALLBACK);
+  const { preview, show, hide } = useFarmPreview();
+  // The grid shows one phase's requirement; the guide knows how to farm the unit
+  // for every phase at once, so the preview leads with this phase's own gate.
+  const farmUnit = guide?.unitById.get(unit.id) ?? null;
+  const note = goalName ? `${goalName} needs ${requirementLabel(target)}` : null;
 
   return (
-    <Card $status={progress.statusClass}>
+    <Card
+      $status={progress.statusClass}
+      $recommended={recommended}
+      onMouseEnter={(event) => show(farmUnit, event.currentTarget, note)}
+      onMouseLeave={hide}
+    >
+      <FarmPreview preview={preview} guide={guide} />
       <Header>
         <Portrait
           $alignment={target.alignment || 'none'}
@@ -50,6 +64,9 @@ export default function UnitCard({ unit }) {
       </Body>
 
       <Footer>
+        {recommended && (
+          <SharedTag badge={{ text: '★ Recommended', className: 'tag-recommended', farms: [] }} />
+        )}
         {badge && <SharedTag badge={badge} />}
         <Status $status={progress.statusClass}>{progress.statusText}</Status>
       </Footer>
@@ -68,6 +85,11 @@ const Card = styled.article`
   border: 1px solid ${({ theme }) => theme.colors.border};
   border-left-width: 3px;
   border-left-color: ${({ theme, $status }) => (statusColors[$status] ?? statusColors['not-started'])(theme)};
+  ${({ theme, $recommended }) => $recommended && css`
+    border-top-color: ${theme.colors.recommendedBorder};
+    border-right-color: ${theme.colors.recommendedBorder};
+    border-bottom-color: ${theme.colors.recommendedBorder};
+  `}
   border-radius: ${({ theme }) => theme.radii.md};
   padding: ${({ theme }) => theme.space[7]};
   display: flex;

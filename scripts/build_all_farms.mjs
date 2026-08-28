@@ -14,6 +14,7 @@ import { brotliDecompress } from 'node:zlib';
 import { promisify } from 'node:util';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { minimumStarsForRelic } from '../src/data/gameRules.js';
 
 const brotli = promisify(brotliDecompress);
 
@@ -130,12 +131,15 @@ async function buildGameIndex() {
     const name = strings[unit.nameKey];
     if (!name) continue;
 
+    const categoryIds = unit.categoryId ?? [];
     const entry = {
       baseId,
       name,
       alignment: ALIGNMENTS[unit.forceAlignment] ?? 'neutral',
       isCharacter: unit.combatType === COMBAT_CHARACTER,
-      categories: unit.categoryId ?? []
+      isCapital:
+        categoryIds.includes('role_capital') || categoryIds.includes('shipclass_capitalship'),
+      categories: categoryIds
     };
 
     byBaseId.set(baseId, entry);
@@ -191,6 +195,18 @@ async function buildAssetIndex() {
   return { characters: toMap(charFiles), ships: toMap(shipFiles) };
 }
 
+/** Wiki links like "Galactic Republic Ship" or "1+ Rebel Ships" are fleet gates. */
+function linkLooksLikeShip(candidates) {
+  return /\bships?\b|capital\s*ships?/i.test(candidates.join(' '));
+}
+
+/** "Any Galactic Republic Capital Ship" vs "any 3+ Galactic Republic Ship". */
+function linkLooksLikeCapitalOnly(candidates) {
+  const text = candidates.join(' ');
+  if (!/capital\s*ships?/i.test(text)) return false;
+  return !/\bships?\b/i.test(text.replace(/capital\s*ships?/gi, ''));
+}
+
 /** A wiki link may be "[[Page|Display]]" or an SMW annotation; try every reading. */
 function wikiLinkCandidates(raw) {
   const value = raw.trim().replace(/^[^:|[\]]{2,40}::/, '');
@@ -202,7 +218,10 @@ function wikiLinkCandidates(raw) {
 
 function parseTarget(raw) {
   const relic = raw.match(/relic\s*(\d+)/i);
-  if (relic) return { targetR: Number(relic[1]), targetStars: 7 };
+  if (relic) {
+    const targetR = Number(relic[1]);
+    return { targetR, targetStars: minimumStarsForRelic(targetR) };
+  }
 
   const stars = raw.match(/(\d+)\s*stars?/i);
   if (stars) return { targetR: 0, targetStars: Number(stars[1]) };
@@ -231,6 +250,50 @@ function extractPrerequisiteSection(wikitext) {
 function relicFloor(wikitext) {
   const values = [...wikitext.matchAll(/Relic Level:'*\s*'*\s*(\d+)/gi)].map((m) => Number(m[1]));
   return values.length > 0 ? Math.min(...values) : 0;
+}
+
+/**
+ * Explicit star gates from playable tiers, kept beside the units named in the
+ * same tier. This prevents a 7-star ship tier from being applied to a fleet
+ * event's relic-gated characters.
+ */
+function collectTierStarRequirements(wikitext) {
+  const requirements = [];
+  const fields = wikitext.matchAll(
+    /\|\s*requirements\s*=([\s\S]*?)(?=\n\s*\|\s*[a-zA-Z]+\s*=|\n\s*\}\})/gi
+  );
+
+  for (const field of fields) {
+    const plainText = field[1].replace(/'/g, '');
+    const stars = plainText.match(/\bStars?\s*:\s*(\d+)/i);
+    if (!stars) continue;
+
+    for (const link of field[1].matchAll(/\[\[(.+?)\]\]/g)) {
+      requirements.push({
+        link: link[1],
+        targetStars: Number(stars[1])
+      });
+    }
+  }
+
+  return requirements;
+}
+
+function mergeTierStarRequirements(requirements, wikitext) {
+  const overlays = collectTierStarRequirements(wikitext);
+
+  return requirements.map((requirement) => {
+    const keys = new Set(wikiLinkCandidates(requirement.link).map(normalize));
+    const matchingStars = overlays
+      .filter((overlay) =>
+        wikiLinkCandidates(overlay.link).some((candidate) => keys.has(normalize(candidate)))
+      )
+      .map((overlay) => overlay.targetStars);
+
+    return matchingStars.length === 0
+      ? requirement
+      : { ...requirement, targetStars: Math.max(requirement.targetStars, ...matchingStars) };
+  });
 }
 
 function collectUpgrades(wikitext) {
@@ -265,13 +328,19 @@ function collectOwnedUnitAchievements(wikitext) {
  * Requirements are read from the most authoritative source available:
  *   1. "Upgrade X to Relic N" quest rows (Galactic Legend ascension chains).
  *   2. "Own N-Star X" achievements (events gated on another unlockable unit).
- *   3. The infobox squad list, gated on 7 stars plus any relic floor the tiers
- *      state. Some of those entries name a whole faction rather than a unit.
+ *   3. The infobox squad list, using the highest explicit star gate and any
+ *      relic floor stated by the tiers. A relic-only gate gets only the minimum
+ *      rarity the game itself requires for that relic.
  */
 function extractRequirements(source, expanded) {
   for (const text of [expanded, source]) {
     const upgrades = collectUpgrades(text);
-    if (upgrades.length > 0) return { requirements: upgrades, origin: 'quests' };
+    if (upgrades.length > 0) {
+      return {
+        requirements: mergeTierStarRequirements(upgrades, source),
+        origin: 'quests'
+      };
+    }
   }
 
   for (const text of [expanded, source]) {
@@ -281,12 +350,16 @@ function extractRequirements(source, expanded) {
 
   const requires = parseInfoboxField(source, 'requires');
   const floor = relicFloor(source);
+  const targetStars = minimumStarsForRelic(floor) || 7;
 
-  const requirements = [...requires.matchAll(/\[\[(.+?)\]\]/g)].map((match) => ({
-    link: match[1],
-    targetR: floor,
-    targetStars: 7
-  }));
+  const requirements = mergeTierStarRequirements(
+    [...requires.matchAll(/\[\[(.+?)\]\]/g)].map((match) => ({
+      link: match[1],
+      targetR: floor,
+      targetStars
+    })),
+    source
+  );
 
   return { requirements, origin: 'entry' };
 }
@@ -384,7 +457,8 @@ function buildPhase({ title, source, expanded, reward, isGalacticLegend, index, 
   const characters = [];
   const ships = [];
   const seen = new Map();
-  const factions = [];
+  const characterFactions = [];
+  const shipFactions = [];
 
   const addUnit = (unit, targetR, targetStars) => {
     const existing = seen.get(unit.baseId);
@@ -397,7 +471,7 @@ function buildPhase({ title, source, expanded, reward, isGalacticLegend, index, 
     const record = {
       name: unit.name,
       id: unit.baseId,
-      alignment: unit.isCharacter ? unit.alignment : null,
+      alignment: unit.alignment,
       targetR: unit.isCharacter ? targetR : 0,
       targetStars,
       icon: iconFor(unit, assets)
@@ -431,20 +505,33 @@ function buildPhase({ title, source, expanded, reward, isGalacticLegend, index, 
       .find(Boolean);
 
     if (faction) {
-      const members = index.membersByCategory.get(faction.id) ?? [];
+      const wantsShips = linkLooksLikeShip(candidates);
+      const capitalOnly = wantsShips && linkLooksLikeCapitalOnly(candidates);
+      const members = (index.membersByCategory.get(faction.id) ?? []).filter((member) => {
+        if (wantsShips) {
+          if (member.isCharacter) return false;
+          if (capitalOnly) return member.isCapital;
+          return true;
+        }
+        return member.isCharacter;
+      });
+
       if (members.length === 0) {
-        warn(`"${title}": faction "${faction.label}" has no members.`);
+        warn(
+          `"${title}": faction "${faction.label}" has no ${wantsShips ? (capitalOnly ? 'capital ships' : 'ships') : 'characters'}.`
+        );
         continue;
       }
-      if (!factions.includes(faction.label)) factions.push(faction.label);
+
+      const bucket = wantsShips ? shipFactions : characterFactions;
+      if (!bucket.includes(faction.label)) bucket.push(faction.label);
       for (const member of members) {
-        if (!member.isCharacter) continue;
         addUnit(member, requirement.targetR, requirement.targetStars);
       }
       continue;
     }
 
-    if (!/capital ship|any /i.test(candidates[0] ?? '')) {
+    if (!/capital ship|any /i.test(candidates.join(' '))) {
       warn(`"${title}": unresolved requirement "${candidates.join(' | ')}".`);
     }
   }
@@ -452,10 +539,16 @@ function buildPhase({ title, source, expanded, reward, isGalacticLegend, index, 
   if (characters.length === 0 && ships.length === 0) return null;
 
   const notes = [];
-  if (factions.length > 0) {
+  if (characterFactions.length > 0) {
     notes.push(
-      `Faction requirement — every eligible ${factions.join(' / ')} unit is listed; ` +
+      `Faction requirement — every eligible ${characterFactions.join(' / ')} unit is listed; ` +
         'you only need the squad size the event asks for.'
+    );
+  }
+  if (shipFactions.length > 0) {
+    notes.push(
+      `Faction requirement — every eligible ${shipFactions.join(' / ')} ship is listed; ` +
+        'you only need the fleet size the event asks for.'
     );
   }
   if (origin === 'achievements') {
@@ -465,6 +558,7 @@ function buildPhase({ title, source, expanded, reward, isGalacticLegend, index, 
     notes.push('Targets come from the event entry requirements rather than a relic quest chain.');
   }
 
+  const factions = [...new Set([...characterFactions, ...shipFactions])];
   const suffix = factions.length > 0 ? ` (${factions.join(' / ')} pool)` : '';
   const rewardIcon = iconFor(reward, assets);
   if (!rewardIcon) warn(`Missing reward portrait for "${reward.name}" (${reward.baseId}).`);

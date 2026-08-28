@@ -90,12 +90,11 @@ export function buildSharedUnitMap(roadmap) {
 }
 
 export function resolveBadge(phase, targetId, currentPhaseIndex, sharedMap) {
+  // Recommended squads now come from src/data/recommendedSquads.js, so this
+  // branch only covers the Leia overlap that the C-3PO prerequisite shares.
   if (phase.category.includes('C-3PO Event')) {
     if (['PRINCESSKNEESAA', 'CHIEFCHIRPA', 'WICKET'].includes(targetId)) {
       return { text: 'Shared with GL Leia', className: 'tag-shared', farms: [] };
-    }
-    if (['LOGRAY', 'EWOKELDER', 'PAPLOO'].includes(targetId)) {
-      return { text: '★ Recommended', className: 'tag-recommended', farms: [] };
     }
     return null;
   }
@@ -115,4 +114,5 @@ export function resolveBadge(phase, targetId, currentPhaseIndex, sharedMap) {
 
 export const C3PO_TIP_HTML =
   '<strong>Farming Strategy:</strong> Princess Kneesaa, Chief Chirpa, and Wicket are already tracked under your Leia path.<br><br>' +
-  '<strong>Recommendation:</strong> Complete your 5-man event squad by adding <strong>Logray</strong>, <strong>Ewok Elder</strong>, and <strong>Paploo</strong>.';
+  '<strong>Recommendation:</strong> The squad marked ★ is the one the swgoh.wiki guide runs — ' +
+  '<strong>Paploo</strong>, <strong>Ewok Elder</strong>, <strong>Wicket</strong>, <strong>Logray</strong> and <strong>Chief Chirpa</strong>.';

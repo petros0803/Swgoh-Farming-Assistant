@@ -16,6 +16,7 @@ export function createGalacticLight(fontSizes) {
       raised: '#e9eef5',
       hover: '#dde5ef',
       track: '#d9e1ec',
+      progressTrack: 'rgba(23, 32, 51, 0.16)',
       starOff: '#c6cfdb',
       border: '#cbd5e1',
       borderStrong: '#94a3b8',
