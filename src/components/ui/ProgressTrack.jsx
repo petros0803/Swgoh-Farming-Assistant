@@ -11,7 +11,7 @@ export default function ProgressTrack({ value = 0, size = 'sm' }) {
 const Track = styled.div`
   height: ${({ theme, $size }) => ($size === 'lg' ? theme.sizes.trackLg : theme.sizes.track)};
   margin-top: ${({ theme, $size }) => ($size === 'lg' ? theme.space[3] : 0)};
-  background-color: ${({ theme }) => theme.colors.track};
+  background-color: ${({ theme }) => theme.colors.progressTrack};
   border-radius: ${({ theme }) => theme.radii.pill};
   overflow: hidden;
 `;

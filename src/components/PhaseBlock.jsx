@@ -4,7 +4,7 @@ import UnitCard from './UnitCard';
 import ProgressTrack from './ui/ProgressTrack';
 import { C3PO_TIP_HTML } from '../utils/sharedUnits';
 
-export default function PhaseBlock({ phase, expanded, onToggle }) {
+export default function PhaseBlock({ phase, guide, expanded, onToggle }) {
   return (
     <Block>
       <Toggle type="button" aria-expanded={expanded} onClick={onToggle}>
@@ -26,6 +26,20 @@ export default function PhaseBlock({ phase, expanded, onToggle }) {
       {expanded && (
         <Sections>
           {phase.note && <Note>{phase.note}</Note>}
+          {phase.recommendation && (
+            <RecommendedNote>
+              <strong>★ marks the community-recommended squad</strong> ({phase.recommendation.count} units),
+              transcribed from{' '}
+              <SourceLink
+                href={phase.recommendation.source}
+                target="_blank"
+                rel="noreferrer noopener"
+              >
+                {phase.recommendation.sourceLabel}
+              </SourceLink>
+              {phase.recommendation.caveat && ` — ${phase.recommendation.caveat}`}
+            </RecommendedNote>
+          )}
           {phase.sections.map((section) => (
             <div key={section.title}>
               <Subtitle>
@@ -34,7 +48,12 @@ export default function PhaseBlock({ phase, expanded, onToggle }) {
               </Subtitle>
               <Grid>
                 {section.units.map((unit) => (
-                  <UnitCard key={`${phase.index}-${unit.id}`} unit={unit} />
+                  <UnitCard
+                    key={`${phase.index}-${unit.id}`}
+                    unit={unit}
+                    guide={guide}
+                    goalName={phase.reward?.name ?? phase.category}
+                  />
                 ))}
               </Grid>
             </div>
@@ -166,6 +185,29 @@ const Note = styled.p`
   border: 1px solid ${({ theme }) => theme.colors.sharedBorder};
   border-radius: ${({ theme }) => theme.radii.md};
   padding: ${({ theme }) => `${theme.space[6]} ${theme.space[8]}`};
+`;
+
+const RecommendedNote = styled.p`
+  font-size: ${({ theme }) => theme.fontSizes.md};
+  line-height: ${({ theme }) => theme.lineHeights.relaxed};
+  color: ${({ theme }) => theme.colors.muted};
+  background: ${({ theme }) => theme.colors.recommendedBg};
+  border: 1px solid ${({ theme }) => theme.colors.recommendedBorder};
+  border-radius: ${({ theme }) => theme.radii.md};
+  padding: ${({ theme }) => `${theme.space[6]} ${theme.space[8]}`};
+
+  strong {
+    color: ${({ theme }) => theme.colors.recommendedText};
+  }
+`;
+
+const SourceLink = styled.a`
+  color: ${({ theme }) => theme.colors.blue};
+  text-decoration: underline;
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.text};
+  }
 `;
 
 const Subtitle = styled.h3`

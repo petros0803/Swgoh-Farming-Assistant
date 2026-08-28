@@ -1,3 +1,5 @@
+import { minimumStarsForRelic } from '../data/gameRules';
+
 export const MAX_STARS = 7;
 
 export function relicLevel(unit) {
@@ -9,19 +11,27 @@ export function evaluateUnit(target, unit) {
   const currentRelic = relicLevel(unit);
   const currentGear = unit ? unit.gear_level : 0;
 
-  let isComplete;
-  let statusText;
-  let progressPct;
+  // Relic and star requirements are independent gates. An event can ask for a
+  // star level with no relic (faction squads, ships) or a relic level, and a
+  // unit is only ready when it satisfies every gate that applies to it.
+  const relicTarget = target.targetR ?? 0;
+  // An omitted star target means the event only named a relic level. Apply
+  // the game's rarity gate for that relic instead of silently requiring 7★.
+  const starTarget = target.targetStars ?? (relicTarget > 0 ? minimumStarsForRelic(relicTarget) : MAX_STARS);
 
-  if (target.targetR) {
-    isComplete = currentRelic >= target.targetR;
-    statusText = isComplete ? 'Ready' : `Need R${target.targetR}`;
-    progressPct = Math.min(100, Math.round((currentRelic / target.targetR) * 100));
-  } else {
-    isComplete = currentStars >= (target.targetStars || MAX_STARS);
-    statusText = isComplete ? 'Ready' : `Need ${target.targetStars}★`;
-    progressPct = Math.min(100, Math.round((currentStars / target.targetStars) * 100));
-  }
+  const starsMet = currentStars >= starTarget;
+  const relicMet = relicTarget === 0 || currentRelic >= relicTarget;
+  const isComplete = starsMet && relicMet;
+
+  // Stars gate gear and relics, so report them as the blocker first.
+  let statusText;
+  if (isComplete) statusText = 'Ready';
+  else if (!starsMet) statusText = `Need ${starTarget}★`;
+  else statusText = `Need R${relicTarget}`;
+
+  const starPct = Math.min(100, (currentStars / starTarget) * 100);
+  const relicPct = relicTarget === 0 ? 100 : Math.min(100, (currentRelic / relicTarget) * 100);
+  const progressPct = Math.round(Math.min(starPct, relicPct));
 
   const statusClass = isComplete ? 'completed' : (unit ? 'in-progress' : 'not-started');
 

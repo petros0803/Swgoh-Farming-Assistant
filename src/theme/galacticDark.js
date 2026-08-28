@@ -16,6 +16,9 @@ function galacticDark(fontSizes) {
       raised: '#1c2128',
       hover: '#22272e',
       track: '#21262d',
+      // Translucent so the empty channel keeps the same contrast on plain,
+      // raised and success-tinted cards alike.
+      progressTrack: 'rgba(240, 246, 252, 0.16)',
       starOff: '#262d36',
       border: '#30363d',
       borderStrong: '#484f58',

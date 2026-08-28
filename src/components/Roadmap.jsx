@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import PhaseBlock from './PhaseBlock';
 import Placeholder from './ui/Placeholder';
 
-export default function Roadmap({ phases, collapsed, onTogglePhase }) {
+export default function Roadmap({ phases, guide, collapsed, onTogglePhase }) {
   if (!phases.length) {
     return (
       <Placeholder slim>
@@ -17,6 +17,7 @@ export default function Roadmap({ phases, collapsed, onTogglePhase }) {
         <PhaseBlock
           key={phase.index}
           phase={phase}
+          guide={guide}
           expanded={!collapsed[phase.index]}
           onToggle={() => onTogglePhase(phase.index)}
         />

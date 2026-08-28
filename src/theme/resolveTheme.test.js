@@ -26,5 +26,10 @@ describe('resolveTheme', () => {
     expect(light.colors.bg).not.toBe(dark.colors.bg);
     expect(light.fonts).toEqual(dark.fonts);
     expect(light.space).toEqual(dark.space);
+
+    // The empty progress channel tints the card it sits on, so a light theme
+    // that inherited the dark overlay would wash out instead of showing.
+    expect(dark.colors.progressTrack).toBeTruthy();
+    expect(light.colors.progressTrack).not.toBe(dark.colors.progressTrack);
   });
 });

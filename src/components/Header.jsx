@@ -3,19 +3,41 @@ import Button from './ui/Button';
 import TextField from './ui/TextField';
 import ThemeSwitch from './ThemeSwitch';
 import styled from 'styled-components';
+import { normalizeAllyCode } from '../utils/format';
+
+export const SAVED_ALLY_CODES = ['497825748', '964559642'];
 
 const NAV_ITEMS = [
-  { to: '/', label: '🗺️ My Roadmap' },
+  { to: '/', label: '✨ Recommended Roadmap' },
+  { to: '/my-roadmap', label: '🗺️ My Roadmap' },
   { to: '/all-farms', label: '📜 All Farms' }
 ];
 
-export default function Header({ allyCode, onAllyCodeChange, onSync, loading }) {
+export default function Header({
+  allyCode,
+  onAllyCodeChange,
+  onSync,
+  loading,
+  previewMode,
+  onPreviewModeChange
+}) {
   const { search } = useLocation();
 
   function handleSubmit(event) {
     event.preventDefault();
-    onSync();
+    onSync(allyCode);
   }
+
+  function handleSavedCode(event) {
+    const code = event.target.value;
+    if (!code) return;
+    onAllyCodeChange(code);
+    onSync(code);
+  }
+
+  const savedSelection = SAVED_ALLY_CODES.includes(normalizeAllyCode(allyCode))
+    ? normalizeAllyCode(allyCode)
+    : '';
 
   return (
     <Bar>
@@ -24,11 +46,25 @@ export default function Header({ allyCode, onAllyCodeChange, onSync, loading }) 
           <Logo aria-hidden="true">⚔️</Logo>
           <div>
             <Title>SWGoH HOLOCRON TRACKER</Title>
-            <Subtitle>Executor ➔ Leia ➔ JKL ➔ Jabba Command Hub</Subtitle>
+            <Subtitle>Plan, prioritize, and track every Journey Guide farm</Subtitle>
           </div>
         </Brand>
         <Actions>
-          <ThemeSwitch />
+          <ThemeCluster>
+            <label className="sr-only" htmlFor="savedAllyCode">Saved ally codes</label>
+            <SavedSelect
+              id="savedAllyCode"
+              value={savedSelection}
+              onChange={handleSavedCode}
+              disabled={loading}
+            >
+              <option value="">Saved ally codes</option>
+              {SAVED_ALLY_CODES.map((code) => (
+                <option key={code} value={code}>{code}</option>
+              ))}
+            </SavedSelect>
+            <ThemeSwitch />
+          </ThemeCluster>
           <Form onSubmit={handleSubmit} autoComplete="off">
             <label className="sr-only" htmlFor="allyCode">Ally Code</label>
             <TextField
@@ -44,6 +80,14 @@ export default function Header({ allyCode, onAllyCodeChange, onSync, loading }) 
               {loading ? 'SYNCING...' : 'SYNC ROSTER'}
             </Button>
           </Form>
+          <Switch>
+            <input
+              type="checkbox"
+              checked={previewMode}
+              onChange={(event) => onPreviewModeChange(event.target.checked)}
+            />
+            <span>Browse without a roster</span>
+          </Switch>
         </Actions>
         <Nav aria-label="Primary">
           {NAV_ITEMS.map((item) => (
@@ -134,6 +178,7 @@ const Actions = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  flex-wrap: wrap;
   gap: ${({ theme }) => theme.space[6]};
   min-width: 0;
 
@@ -141,6 +186,69 @@ const Actions = styled.div`
     width: 100%;
     flex-direction: column;
     align-items: flex-end;
+  }
+`;
+
+const ThemeCluster = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.space[5]};
+  min-width: 0;
+
+  ${({ theme }) => theme.media.phone} {
+    width: 100%;
+  }
+`;
+
+const SavedSelect = styled.select`
+  min-width: 0;
+  min-height: ${({ theme }) => theme.sizes.tap};
+  background-color: ${({ theme }) => theme.colors.bg};
+  border: ${({ theme }) => theme.borders.thin} solid ${({ theme }) => theme.colors.border};
+  border-radius: ${({ theme }) => theme.radii.md};
+  color: ${({ theme }) => theme.colors.text};
+  font-family: ${({ theme }) => theme.fonts.body};
+  font-size: ${({ theme }) => theme.fontSizes.base};
+  padding: ${({ theme }) => `${theme.space[5]} ${theme.space[8]}`};
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+
+  ${({ theme }) => theme.media.phone} {
+    flex: 1;
+  }
+
+  &:focus {
+    border-color: ${({ theme }) => theme.colors.blue};
+    box-shadow: 0 0 0 3px ${({ theme }) => theme.colors.focus};
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: wait;
+  }
+`;
+
+const Switch = styled.label`
+  display: inline-flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.space[4]};
+  min-height: ${({ theme }) => theme.sizes.tap};
+  font-size: ${({ theme }) => theme.fontSizes.base};
+  color: ${({ theme }) => theme.colors.muted};
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+
+  input {
+    width: 18px;
+    height: 18px;
+    accent-color: ${({ theme }) => theme.colors.blue};
+    cursor: pointer;
+  }
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.text};
   }
 `;
 

@@ -5,6 +5,7 @@ import Footer from './components/Footer';
 import RosterProvider from './context/RosterProvider';
 import { useRosterState } from './context/rosterContext';
 import AllFarmsPage from './pages/AllFarmsPage';
+import MyRoadmapPage from './pages/MyRoadmapPage';
 import RoadmapPage from './pages/RoadmapPage';
 import { ThemeRoot } from './theme';
 
@@ -21,19 +22,29 @@ export default function App() {
 }
 
 function AppShell() {
-  const { allyCode, setAllyCode, syncRoster, loading } = useRosterState();
+  const {
+    allyCode,
+    setAllyCode,
+    syncRoster,
+    loading,
+    previewMode,
+    setPreviewMode
+  } = useRosterState();
 
   return (
     <>
       <Header
         allyCode={allyCode}
         onAllyCodeChange={setAllyCode}
-        onSync={() => syncRoster(allyCode)}
+        onSync={(code) => syncRoster(code || allyCode)}
         loading={loading}
+        previewMode={previewMode}
+        onPreviewModeChange={setPreviewMode}
       />
       <Main>
         <Routes>
           <Route path="/" element={<RoadmapPage />} />
+          <Route path="/my-roadmap" element={<MyRoadmapPage />} />
           <Route path="/all-farms" element={<AllFarmsPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

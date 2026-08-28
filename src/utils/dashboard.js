@@ -1,4 +1,5 @@
 import { farmingRoadmap } from '../data/farmingRoadmap';
+import { getRecommendedSquad } from '../data/recommendedSquads';
 import { evaluateUnit, percent } from './unitProgress';
 import { buildSharedUnitMap, resolveBadge } from './sharedUnits';
 
@@ -12,7 +13,7 @@ export function buildRosterMap(playerData) {
   return rosterMap;
 }
 
-function mapSection(title, unitsList, phase, phaseIndex, sharedMap, rosterMap) {
+function mapSection(title, unitsList, phase, phaseIndex, sharedMap, rosterMap, recommended) {
   if (!unitsList || unitsList.length === 0) return null;
 
   const units = unitsList.map((target) => {
@@ -24,6 +25,7 @@ function mapSection(title, unitsList, phase, phaseIndex, sharedMap, rosterMap) {
       target,
       progress: evaluateUnit(target, unit),
       badge: resolveBadge(phase, targetId, phaseIndex, sharedMap),
+      recommended: Boolean(recommended?.ids.has(targetId)),
       portrait: target.icon || unit?.image || ''
     };
   });
@@ -39,9 +41,10 @@ export function buildDashboard(playerData, roadmap = farmingRoadmap) {
   let totalMetRequirements = 0;
 
   const phases = roadmap.map((phase, phaseIndex) => {
+    const recommended = getRecommendedSquad(phase);
     const sections = [
-      mapSection('👤 CHARACTERS', phase.characters, phase, phaseIndex, sharedMap, rosterMap),
-      mapSection('🛸 SHIPS', phase.ships, phase, phaseIndex, sharedMap, rosterMap)
+      mapSection('👤 CHARACTERS', phase.characters, phase, phaseIndex, sharedMap, rosterMap, recommended),
+      mapSection('🛸 SHIPS', phase.ships, phase, phaseIndex, sharedMap, rosterMap, recommended)
     ].filter(Boolean);
 
     const allUnits = sections.flatMap((section) => section.units);
@@ -54,6 +57,14 @@ export function buildDashboard(playerData, roadmap = farmingRoadmap) {
       category: phase.category,
       note: phase.note ?? null,
       reward: phase.reward ?? null,
+      recommendation: recommended
+        ? {
+          count: recommended.ids.size,
+          source: recommended.source,
+          sourceLabel: recommended.sourceLabel,
+          caveat: recommended.caveat
+        }
+        : null,
       isC3po: phase.category.includes('C-3PO Event'),
       sections,
       met,
