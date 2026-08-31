@@ -1,0 +1,887 @@
+{
+  "108": {
+    "name": "Mk 3 Carbanti Sensor Array",
+    "file": "108.png",
+    "source": "https://swgoh.wiki/images/3/31/Gear-Mk_3_Carbanti_Sensor_Array.png"
+  },
+  "15133": {
+    "name": "Health mod",
+    "file": "15133.png",
+    "source": "https://swgoh.wiki/images/8/83/Mod-Health-Transmitter-C.png"
+  },
+  "15233": {
+    "name": "Health mod",
+    "file": "15233.png",
+    "source": "https://swgoh.wiki/images/9/9b/Mod-Health-Receiver-C.png"
+  },
+  "15333": {
+    "name": "Health mod",
+    "file": "15333.png",
+    "source": "https://swgoh.wiki/images/c/c9/Mod-Health-Processor-C.png"
+  },
+  "15433": {
+    "name": "Health mod",
+    "file": "15433.png",
+    "source": "https://swgoh.wiki/images/6/60/Mod-Health-Holo-Array-C.png"
+  },
+  "15533": {
+    "name": "Health mod",
+    "file": "15533.png",
+    "source": "https://swgoh.wiki/images/8/81/Mod-Health-Data-Bus-C.png"
+  },
+  "15633": {
+    "name": "Health mod",
+    "file": "15633.png",
+    "source": "https://swgoh.wiki/images/c/cf/Mod-Health-Multiplexer-C.png"
+  },
+  "15714": {
+    "name": "Health mod",
+    "file": "15714.png",
+    "source": "https://swgoh.wiki/images/f/f4/Mod-Mystery-Health-A.png"
+  },
+  "15715": {
+    "name": "Health mod",
+    "file": "15715.png",
+    "source": "https://swgoh.wiki/images/f/f4/Mod-Mystery-Health-A.png"
+  },
+  "35714": {
+    "name": "Defense mod",
+    "file": "35714.png",
+    "source": "https://swgoh.wiki/images/d/da/Mod-Mystery-Defense-A.png"
+  },
+  "35715": {
+    "name": "Defense mod",
+    "file": "35715.png",
+    "source": "https://swgoh.wiki/images/d/da/Mod-Mystery-Defense-A.png"
+  },
+  "45715": {
+    "name": "Speed mod",
+    "file": "45715.png",
+    "source": "https://swgoh.wiki/images/a/a4/Mod-Mystery-Speed-A.png"
+  },
+  "75715": {
+    "name": "Potency mod",
+    "file": "75715.png",
+    "source": "https://swgoh.wiki/images/d/d1/Mod-Mystery-Potency-A.png"
+  },
+  "85714": {
+    "name": "Tenacity mod",
+    "file": "85714.png",
+    "source": "https://swgoh.wiki/images/9/91/Mod-Mystery-Tenacity-A.png"
+  },
+  "85715": {
+    "name": "Tenacity mod",
+    "file": "85715.png",
+    "source": "https://swgoh.wiki/images/9/91/Mod-Mystery-Tenacity-A.png"
+  },
+  "GRIND": {
+    "name": "Credits",
+    "file": "grind.png",
+    "source": "https://swgoh.wiki/images/2/2d/Game-Icon-Credits.png"
+  },
+  "ability_mat_C": {
+    "name": "Ability Material Mk III",
+    "file": "ability-mat-c.png",
+    "source": "https://swgoh.wiki/images/5/52/Game-Icon-Ability_Material_Mk_III.png"
+  },
+  "unitshard_LOGRAY": {
+    "name": "Logray shards",
+    "file": "unitshard-logray.png",
+    "source": "https://swgoh.wiki/images/c/c4/Unit-Character-Logray-portrait.png"
+  },
+  "xp-mat-five-star": {
+    "name": "T5 Training Droid",
+    "file": "xp-mat-five-star.png",
+    "source": "https://swgoh.wiki/images/1/1f/Game-Icon-T5_Training_Droid.png"
+  },
+  "unitshard_TEEBO": {
+    "name": "Teebo shards",
+    "file": "unitshard-teebo.png",
+    "source": "https://swgoh.wiki/images/0/06/Unit-Character-Teebo-portrait.png"
+  },
+  "unitshard_PAPLOO": {
+    "name": "Paploo shards",
+    "file": "unitshard-paploo.png",
+    "source": "https://swgoh.wiki/images/3/3d/Unit-Character-Paploo-portrait.png"
+  },
+  "unitshard_CHIEFCHIRPA": {
+    "name": "Chief Chirpa shards",
+    "file": "unitshard-chiefchirpa.png",
+    "source": "https://swgoh.wiki/images/8/85/Unit-Character-Chief_Chirpa-portrait.png"
+  },
+  "unitshard_EWOKSCOUT": {
+    "name": "Ewok Scout shards",
+    "file": "unitshard-ewokscout.png",
+    "source": "https://swgoh.wiki/images/5/53/Unit-Character-Ewok_Scout-portrait.png"
+  },
+  "unitshard_EWOKELDER": {
+    "name": "Ewok Elder shards",
+    "file": "unitshard-ewokelder.png",
+    "source": "https://swgoh.wiki/images/9/9e/Unit-Character-Ewok_Elder-portrait.png"
+  },
+  "113Salvage": {
+    "name": "Mk 6 Chiewab Hypo Syringe Salvage",
+    "file": "113salvage.png",
+    "source": "https://swgoh.wiki/images/b/ba/Gear-Mk_6_Chiewab_Hypo_Syringe_Salvage.png"
+  },
+  "093PrototypeSalvage": {
+    "name": "Mk 4 Chiewab Hypo Syringe Prototype Salvage",
+    "file": "093prototypesalvage.png",
+    "source": "https://swgoh.wiki/images/b/ba/Gear-Mk_4_Chiewab_Hypo_Syringe_Prototype_Salvage.png"
+  },
+  "094PrototypeSalvage": {
+    "name": "Mk 6 BioTech Implant Prototype Salvage",
+    "file": "094prototypesalvage.png",
+    "source": "https://swgoh.wiki/images/0/0e/Gear-Mk_6_BioTech_Implant_Prototype_Salvage.png"
+  },
+  "106PrototypeSalvage": {
+    "name": "Mk 3 Chedak Comlink Prototype Salvage",
+    "file": "106prototypesalvage.png",
+    "source": "https://swgoh.wiki/images/8/83/Gear-Mk_3_Chedak_Comlink_Prototype_Salvage.png"
+  },
+  "112Salvage": {
+    "name": "Mk 3 Czerka Stun Cuffs Salvage",
+    "file": "112salvage.png",
+    "source": "https://swgoh.wiki/images/2/23/Gear-Mk_3_Czerka_Stun_Cuffs_Salvage.png"
+  },
+  "087PrototypeSalvage": {
+    "name": "Mk 5 Nubian Security Scanner Prototype Salvage",
+    "file": "087prototypesalvage.png",
+    "source": "https://swgoh.wiki/images/0/0f/Gear-Mk_5_Nubian_Security_Scanner_Prototype_Salvage.png"
+  },
+  "117PrototypeSalvage": {
+    "name": "Mk 5 A/KT Stun Gun Prototype Salvage",
+    "file": "117prototypesalvage.png",
+    "source": "https://swgoh.wiki/images/d/df/Gear-Mk_5_A-KT_Stun_Gun_Prototype_Salvage.png"
+  },
+  "120PrototypeSalvage": {
+    "name": "Mk 5 Merr-Sonn Thermal Detonator Prototype Salvage",
+    "file": "120prototypesalvage.png",
+    "source": "https://swgoh.wiki/images/c/c2/Gear-Mk_5_Merr-Sonn_Thermal_Detonator_Prototype_Salvage.png"
+  },
+  "172Salvage": {
+    "name": "Mk 7 Kyrotech Shock Prod Prototype Salvage",
+    "file": "172salvage.png",
+    "source": "https://swgoh.wiki/images/8/83/Gear-Mk_7_Kyrotech_Shock_Prod_Prototype_Salvage.png"
+  },
+  "ability_mat_E": {
+    "name": "Ability Material Zeta",
+    "file": "ability-mat-e.png",
+    "source": "https://swgoh.wiki/images/6/63/Game-Icon-Ability_Material_Zeta.png"
+  },
+  "ability_mat_D": {
+    "name": "Ability Material Omega",
+    "file": "ability-mat-d.png",
+    "source": "https://swgoh.wiki/images/7/7d/Game-Icon-Ability_Material_Omega.png"
+  },
+  "135Salvage": {
+    "name": "Mk 5 Arakyd Droid Caller Salvage",
+    "file": "135salvage.png",
+    "source": "https://swgoh.wiki/images/c/cf/Gear-Mk_5_Arakyd_Droid_Caller_Salvage.png"
+  },
+  "173Salvage": {
+    "name": "Mk 9 Kyrotech Battle Computer Prototype Salvage",
+    "file": "173salvage.png",
+    "source": "https://swgoh.wiki/images/6/6c/Gear-Mk_9_Kyrotech_Battle_Computer_Prototype_Salvage.png"
+  },
+  "RM_001": {
+    "name": "Fragmented Signal Data",
+    "file": "rm-001.png",
+    "source": "https://swgoh.wiki/images/0/08/Gear-Fragmented_Signal_Data.png"
+  },
+  "SCV_005": {
+    "name": "Electrium Conductor",
+    "file": "scv-005.png",
+    "source": "https://swgoh.wiki/images/7/7b/Gear-Electrium_Conductor.png"
+  },
+  "175Ingredient_Salvage": {
+    "name": "Injector Handle Salvage",
+    "file": "175ingredient-salvage.png",
+    "source": "https://swgoh.wiki/images/8/80/Gear-Injector_Handle_Salvage.png"
+  },
+  "174Ingredient_Salvage": {
+    "name": "Injector Cell Salvage",
+    "file": "174ingredient-salvage.png",
+    "source": "https://swgoh.wiki/images/1/1b/Gear-Injector_Cell_Salvage.png"
+  },
+  "SCV_003": {
+    "name": "Chromium Transistor",
+    "file": "scv-003.png",
+    "source": "https://swgoh.wiki/images/2/23/Gear-Chromium_Transistor.png"
+  },
+  "RM_002": {
+    "name": "Incomplete Signal Data",
+    "file": "rm-002.png",
+    "source": "https://swgoh.wiki/images/2/26/Gear-Incomplete_Signal_Data.png"
+  },
+  "SCV_002": {
+    "name": "Bronzium Wiring",
+    "file": "scv-002.png",
+    "source": "https://swgoh.wiki/images/e/e0/Gear-Bronzium_Wiring.png"
+  },
+  "176Ingredient_Salvage": {
+    "name": "Injector Head Salvage",
+    "file": "176ingredient-salvage.png",
+    "source": "https://swgoh.wiki/images/a/a8/Gear-Injector_Head_Salvage.png"
+  },
+  "SCV_001": {
+    "name": "Carbonite Circuit Board",
+    "file": "scv-001.png",
+    "source": "https://swgoh.wiki/images/6/6d/Gear-Carbonite_Circuit_Board.png"
+  },
+  "SCV_004": {
+    "name": "Aurodium Heatsink",
+    "file": "scv-004.png",
+    "source": "https://swgoh.wiki/images/5/52/Gear-Aurodium_Heatsink.png"
+  },
+  "unitshard_STORMTROOPER": {
+    "name": "Stormtrooper shards",
+    "file": "unitshard-stormtrooper.png",
+    "source": "https://swgoh.wiki/images/4/47/Unit-Character-Stormtrooper-portrait.png"
+  },
+  "unitshard_VADER": {
+    "name": "Darth Vader shards",
+    "file": "unitshard-vader.png",
+    "source": "https://swgoh.wiki/images/0/00/Unit-Character-Darth_Vader-portrait.png"
+  },
+  "unitshard_TIEFIGHTERPILOT": {
+    "name": "TIE Fighter Pilot shards",
+    "file": "unitshard-tiefighterpilot.png",
+    "source": "https://swgoh.wiki/images/b/bf/Unit-Character-TIE_Fighter_Pilot-portrait.png"
+  },
+  "unitshard_GRANDMOFFTARKIN": {
+    "name": "Grand Moff Tarkin shards",
+    "file": "unitshard-grandmofftarkin.png",
+    "source": "https://swgoh.wiki/images/1/18/Unit-Character-Grand_Moff_Tarkin-portrait.png"
+  },
+  "unitshard_SHORETROOPER": {
+    "name": "Shoretrooper shards",
+    "file": "unitshard-shoretrooper.png",
+    "source": "https://swgoh.wiki/images/0/0f/Unit-Character-Shoretrooper-portrait.png"
+  },
+  "unitshard_ROYALGUARD": {
+    "name": "Royal Guard shards",
+    "file": "unitshard-royalguard.png",
+    "source": "https://swgoh.wiki/images/7/7c/Unit-Character-Royal_Guard-portrait.png"
+  },
+  "unitshard_VEERS": {
+    "name": "General Veers shards",
+    "file": "unitshard-veers.png",
+    "source": "https://swgoh.wiki/images/c/cc/Unit-Character-General_Veers-portrait.png"
+  },
+  "unitshard_SNOWTROOPER": {
+    "name": "Snowtrooper shards",
+    "file": "unitshard-snowtrooper.png",
+    "source": "https://swgoh.wiki/images/6/66/Unit-Character-Snowtrooper-portrait.png"
+  },
+  "unitshard_MAGMATROOPER": {
+    "name": "Magmatrooper shards",
+    "file": "unitshard-magmatrooper.png",
+    "source": "https://swgoh.wiki/images/8/8f/Unit-Character-Magmatrooper-portrait.png"
+  },
+  "RM_003": {
+    "name": "Flawed Signal Data",
+    "file": "rm-003.png",
+    "source": "https://swgoh.wiki/images/b/b7/Gear-Flawed_Signal_Data.png"
+  },
+  "unitshard_DEATHTROOPER": {
+    "name": "Death Trooper shards",
+    "file": "unitshard-deathtrooper.png",
+    "source": "https://swgoh.wiki/images/1/12/Unit-Character-Death_Trooper-portrait.png"
+  },
+  "unitshard_GARSAXON": {
+    "name": "Gar Saxon shards",
+    "file": "unitshard-garsaxon.png",
+    "source": "https://swgoh.wiki/images/2/20/Unit-Character-Gar_Saxon-portrait.png"
+  },
+  "shipability_mat_A": {
+    "name": "Ship Ability Material Mk I",
+    "file": "shipability-mat-a.png",
+    "source": "https://swgoh.wiki/images/1/13/Game-Icon-Ship_Ability_Material_Mk_I.png"
+  },
+  "unitshard_GAUNTLETSTARFIGHTER": {
+    "name": "Gauntlet Starfighter blueprints",
+    "file": "unitshard-gauntletstarfighter.png",
+    "source": "https://swgoh.wiki/images/1/10/Unit-Ship-Gauntlet_Starfighter-portrait.png"
+  },
+  "unitshard_TIEFIGHTERIMPERIAL": {
+    "name": "Imperial TIE Fighter blueprints",
+    "file": "unitshard-tiefighterimperial.png",
+    "source": "https://swgoh.wiki/images/9/93/Unit-Ship-Imperial_TIE_Fighter-portrait.png"
+  },
+  "unitshard_TIEREAPER": {
+    "name": "TIE Reaper blueprints",
+    "file": "unitshard-tiereaper.png",
+    "source": "https://swgoh.wiki/images/5/51/Unit-Ship-TIE_Reaper-portrait.png"
+  },
+  "shipability_mat_B": {
+    "name": "Ship Ability Material Mk II",
+    "file": "shipability-mat-b.png",
+    "source": "https://swgoh.wiki/images/2/2f/Game-Icon-Ship_Ability_Material_Mk_II.png"
+  },
+  "unitshard_DIRECTORKRENNIC": {
+    "name": "Director Krennic shards",
+    "file": "unitshard-directorkrennic.png",
+    "source": "https://swgoh.wiki/images/1/1a/Unit-Character-Director_Krennic-portrait.png"
+  },
+  "unitshard_TIEADVANCED": {
+    "name": "TIE Advanced x1 blueprints",
+    "file": "unitshard-tieadvanced.png",
+    "source": "https://swgoh.wiki/images/c/cd/Unit-Ship-TIE_Advanced_x1-portrait.png"
+  },
+  "unitshard_IMPERIALSUPERCOMMANDO": {
+    "name": "Imperial Super Commando shards",
+    "file": "unitshard-imperialsupercommando.png",
+    "source": "https://swgoh.wiki/images/d/d4/Unit-Character-Imperial_Super_Commando-portrait.png"
+  },
+  "ship-xp-mat-five-star": {
+    "name": "T5 Enhancement Droid",
+    "file": "ship-xp-mat-five-star.png",
+    "source": "https://swgoh.wiki/images/8/82/Game-Icon-T5_Enhancement_Droid.png"
+  },
+  "unitshard_POGGLETHELESSER": {
+    "name": "Poggle the Lesser shards",
+    "file": "unitshard-pogglethelesser.png",
+    "source": "https://swgoh.wiki/images/b/be/Unit-Character-Poggle_the_Lesser-portrait.png"
+  },
+  "unitshard_B2SUPERBATTLEDROID": {
+    "name": "B2 Super Battle Droid shards",
+    "file": "unitshard-b2superbattledroid.png",
+    "source": "https://swgoh.wiki/images/9/9d/Unit-Character-B2_Super_Battle_Droid-portrait.png"
+  },
+  "ship-xp-mat-four-star": {
+    "name": "T4 Enhancement Droid",
+    "file": "ship-xp-mat-four-star.png",
+    "source": "https://swgoh.wiki/images/7/77/Game-Icon-T4_Enhancement_Droid.png"
+  },
+  "unitshard_MAGNAGUARD": {
+    "name": "IG-100 MagnaGuard shards",
+    "file": "unitshard-magnaguard.png",
+    "source": "https://swgoh.wiki/images/6/66/Unit-Character-IG-100_MagnaGuard-portrait.png"
+  },
+  "unitshard_COUNTDOOKU": {
+    "name": "Count Dooku shards",
+    "file": "unitshard-countdooku.png",
+    "source": "https://swgoh.wiki/images/d/d5/Unit-Character-Count_Dooku-portrait.png"
+  },
+  "unitshard_GEONOSIANSOLDIER": {
+    "name": "Geonosian Soldier shards",
+    "file": "unitshard-geonosiansoldier.png",
+    "source": "https://swgoh.wiki/images/d/db/Unit-Character-Geonosian_Soldier-portrait.png"
+  },
+  "unitshard_ASAJVENTRESS": {
+    "name": "Asajj Ventress shards",
+    "file": "unitshard-asajventress.png",
+    "source": "https://swgoh.wiki/images/3/3d/Unit-Character-Asajj_Ventress-portrait.png"
+  },
+  "unitshard_NUTEGUNRAY": {
+    "name": "Nute Gunray shards",
+    "file": "unitshard-nutegunray.png",
+    "source": "https://swgoh.wiki/images/9/96/Unit-Character-Nute_Gunray-portrait.png"
+  },
+  "ship-xp-mat-six-star": {
+    "name": "T6 Enhancement Droid",
+    "file": "ship-xp-mat-six-star.png",
+    "source": "https://swgoh.wiki/images/a/af/Game-Icon-T6_Enhancement_Droid.png"
+  },
+  "unitshard_SUNFAC": {
+    "name": "Sun Fac shards",
+    "file": "unitshard-sunfac.png",
+    "source": "https://swgoh.wiki/images/a/af/Unit-Character-Sun_Fac-portrait.png"
+  },
+  "unitshard_GEONOSIANSTARFIGHTER3": {
+    "name": "Geonosian Spy's Starfighter blueprints",
+    "file": "unitshard-geonosianstarfighter3.png",
+    "source": "https://swgoh.wiki/images/5/5f/Unit-Ship-Geonosian_Spy%27s_Starfighter-portrait.png"
+  },
+  "unitshard_GEONOSIANSTARFIGHTER1": {
+    "name": "Sun Fac's Geonosian Starfighter blueprints",
+    "file": "unitshard-geonosianstarfighter1.png",
+    "source": "https://swgoh.wiki/images/a/a4/Unit-Ship-Sun_Fac%27s_Geonosian_Starfighter-portrait.png"
+  },
+  "unitshard_GEONOSIANSPY": {
+    "name": "Geonosian Spy shards",
+    "file": "unitshard-geonosianspy.png",
+    "source": "https://swgoh.wiki/images/7/73/Unit-Character-Geonosian_Spy-portrait.png"
+  },
+  "unitshard_GRIEVOUS": {
+    "name": "General Grievous shards",
+    "file": "unitshard-grievous.png",
+    "source": "https://swgoh.wiki/images/9/9d/Unit-Character-General_Grievous-portrait.png"
+  },
+  "unitshard_GEONOSIANSTARFIGHTER2": {
+    "name": "Geonosian Soldier's Starfighter blueprints",
+    "file": "unitshard-geonosianstarfighter2.png",
+    "source": "https://swgoh.wiki/images/3/36/Unit-Ship-Geonosian_Soldier%27s_Starfighter-portrait.png"
+  },
+  "xp-mat-three-star": {
+    "name": "T3 Training Droid",
+    "file": "xp-mat-three-star.png",
+    "source": "https://swgoh.wiki/images/a/a1/Game-Icon-T3_Training_Droid.png"
+  },
+  "unitshard_AHSOKATANO": {
+    "name": "Ahsoka Tano (Snips) shards",
+    "file": "unitshard-ahsokatano.png",
+    "source": "https://swgoh.wiki/images/7/78/Unit-Character-Ahsoka_Tano_%28Snips%29-portrait.png"
+  },
+  "unitshard_PLOKOON": {
+    "name": "Plo Koon shards",
+    "file": "unitshard-plokoon.png",
+    "source": "https://swgoh.wiki/images/9/92/Unit-Character-Plo_Koon-portrait.png"
+  },
+  "unitshard_BLADEOFDORIN": {
+    "name": "Plo Koon's Jedi Starfighter blueprints",
+    "file": "unitshard-bladeofdorin.png",
+    "source": "https://swgoh.wiki/images/1/1a/Unit-Ship-Plo_Koon%27s_Jedi_Starfighter-portrait.png"
+  },
+  "unitshard_JEDISTARFIGHTERAHSOKATANO": {
+    "name": "Ahsoka Tano's Jedi Starfighter blueprints",
+    "file": "unitshard-jedistarfighterahsokatano.png",
+    "source": "https://swgoh.wiki/images/5/5a/Unit-Ship-Ahsoka_Tano%27s_Jedi_Starfighter-portrait.png"
+  },
+  "unitshard_JEDISTARFIGHTERCONSULAR": {
+    "name": "Jedi Consular's Starfighter blueprints",
+    "file": "unitshard-jedistarfighterconsular.png",
+    "source": "https://swgoh.wiki/images/0/07/Unit-Ship-Jedi_Consular%27s_Starfighter-portrait.png"
+  },
+  "unitshard_JEDIKNIGHTCONSULAR": {
+    "name": "Jedi Consular shards",
+    "file": "unitshard-jediknightconsular.png",
+    "source": "https://swgoh.wiki/images/9/97/Unit-Character-Jedi_Consular-portrait.png"
+  },
+  "SHIP_GRIND": {
+    "name": "Ship Building Materials",
+    "file": "ship-grind.png",
+    "source": "https://swgoh.wiki/images/b/bc/Game-Icon-Ship_Building_Materials.png"
+  },
+  "095Salvage": {
+    "name": "Mk 4 A/KT Stun Gun Salvage",
+    "file": "095salvage.png",
+    "source": "https://swgoh.wiki/images/7/7f/Gear-Mk_4_A-KT_Stun_Gun_Salvage.png"
+  },
+  "unitshard_CLONESERGEANTPHASEI": {
+    "name": "Clone Sergeant - Phase I shards",
+    "file": "unitshard-clonesergeantphasei.png",
+    "source": "https://swgoh.wiki/images/e/ed/Unit-Character-Clone_Sergeant_-_Phase_I-portrait.png"
+  },
+  "097PrototypeSalvage": {
+    "name": "Mk 8 BlasTech Weapon Mod Prototype Salvage",
+    "file": "097prototypesalvage.png",
+    "source": "https://swgoh.wiki/images/e/e7/Gear-Mk_8_BlasTech_Weapon_Mod_Prototype_Salvage.png"
+  },
+  "unitshard_UMBARANSTARFIGHTER": {
+    "name": "Umbaran Starfighter blueprints",
+    "file": "unitshard-umbaranstarfighter.png",
+    "source": "https://swgoh.wiki/images/c/c8/Unit-Ship-Umbaran_Starfighter-portrait.png"
+  },
+  "unitshard_ARC170REX": {
+    "name": "Rex's ARC-170 blueprints",
+    "file": "unitshard-arc170rex.png",
+    "source": "https://swgoh.wiki/images/e/ea/Unit-Ship-Rex%27s_ARC-170-portrait.png"
+  },
+  "unitshard_MACEWINDU": {
+    "name": "Mace Windu shards",
+    "file": "unitshard-macewindu.png",
+    "source": "https://swgoh.wiki/images/6/6f/Unit-Character-Mace_Windu-portrait.png"
+  },
+  "100PrototypeSalvage": {
+    "name": "Mk 6 Nubian Security Scanner Prototype Salvage",
+    "file": "100prototypesalvage.png",
+    "source": "https://swgoh.wiki/images/c/ce/Gear-Mk_6_Nubian_Security_Scanner_Prototype_Salvage.png"
+  },
+  "unitshard_ARC170CLONESERGEANT": {
+    "name": "Clone Sergeant's ARC-170 blueprints",
+    "file": "unitshard-arc170clonesergeant.png",
+    "source": "https://swgoh.wiki/images/e/ec/Unit-Ship-Clone_Sergeant%27s_ARC-170-portrait.png"
+  },
+  "unitshard_CT7567": {
+    "name": "CT-7567 \"Rex\" shards",
+    "file": "unitshard-ct7567.png",
+    "source": "https://swgoh.wiki/images/6/6e/Unit-Character-CT-7567_%22Rex%22-portrait.png"
+  },
+  "unitshard_CT5555": {
+    "name": "CT-5555 \"Fives\" shards",
+    "file": "unitshard-ct5555.png",
+    "source": "https://swgoh.wiki/images/4/47/Unit-Character-CT-5555_%22Fives%22-portrait.png"
+  },
+  "unitshard_SITHTROOPER": {
+    "name": "Sith Empire Trooper shards",
+    "file": "unitshard-sithtrooper.png",
+    "source": "https://swgoh.wiki/images/a/a8/Unit-Character-Sith_Empire_Trooper-portrait.png"
+  },
+  "102Salvage": {
+    "name": "Mk 3 Sienar Holo Projector Salvage",
+    "file": "102salvage.png",
+    "source": "https://swgoh.wiki/images/6/6a/Gear-Mk_3_Sienar_Holo_Projector_Salvage.png"
+  },
+  "unitshard_DARTHSIDIOUS": {
+    "name": "Darth Sidious shards",
+    "file": "unitshard-darthsidious.png",
+    "source": "https://swgoh.wiki/images/b/bf/Unit-Character-Darth_Sidious-portrait.png"
+  },
+  "unitshard_COMMANDSHUTTLE": {
+    "name": "Kylo Ren's Command Shuttle blueprints",
+    "file": "unitshard-commandshuttle.png",
+    "source": "https://swgoh.wiki/images/2/2e/Unit-Ship-Kylo_Ren%27s_Command_Shuttle-portrait.png"
+  },
+  "unitshard_SITHASSASSIN": {
+    "name": "Sith Assassin shards",
+    "file": "unitshard-sithassassin.png",
+    "source": "https://swgoh.wiki/images/7/79/Unit-Character-Sith_Assassin-portrait.png"
+  },
+  "101Salvage": {
+    "name": "Mk 5 SoroSuub Keypad Salvage",
+    "file": "101salvage.png",
+    "source": "https://swgoh.wiki/images/6/66/Gear-Mk_5_SoroSuub_Keypad_Salvage.png"
+  },
+  "unitshard_SITHINFILTRATOR": {
+    "name": "Scimitar blueprints",
+    "file": "unitshard-sithinfiltrator.png",
+    "source": "https://swgoh.wiki/images/9/91/Unit-Ship-Scimitar-portrait.png"
+  },
+  "unitshard_DARTHNIHILUS": {
+    "name": "Darth Nihilus shards",
+    "file": "unitshard-darthnihilus.png",
+    "source": "https://swgoh.wiki/images/f/f0/Unit-Character-Darth_Nihilus-portrait.png"
+  },
+  "103PrototypeSalvage": {
+    "name": "Mk 2 Zaltin Bacta Gel Prototype Salvage",
+    "file": "103prototypesalvage.png",
+    "source": "https://swgoh.wiki/images/8/8b/Gear-Mk_2_Zaltin_Bacta_Gel_Prototype_Salvage.png"
+  },
+  "104PrototypeSalvage": {
+    "name": "Mk 5 Chiewab Hypo Syringe Prototype Salvage",
+    "file": "104prototypesalvage.png",
+    "source": "https://swgoh.wiki/images/c/c6/Gear-Mk_5_Chiewab_Hypo_Syringe_Prototype_Salvage.png"
+  },
+  "150Salvage": {
+    "name": "Mk 4 Zaltin Bacta Gel Salvage",
+    "file": "150salvage.png",
+    "source": "https://swgoh.wiki/images/7/7e/Gear-Mk_4_Zaltin_Bacta_Gel_Salvage.png"
+  },
+  "unitshard_CASSIANANDOR": {
+    "name": "Cassian Andor shards",
+    "file": "unitshard-cassianandor.png",
+    "source": "https://swgoh.wiki/images/d/d8/Unit-Character-Cassian_Andor-portrait.png"
+  },
+  "153Salvage": {
+    "name": "Mk 9 BioTech Implant Salvage",
+    "file": "153salvage.png",
+    "source": "https://swgoh.wiki/images/4/42/Gear-Mk_9_BioTech_Implant_Salvage.png"
+  },
+  "unitshard_JYNERSO": {
+    "name": "Jyn Erso shards",
+    "file": "unitshard-jynerso.png",
+    "source": "https://swgoh.wiki/images/9/98/Unit-Character-Jyn_Erso-portrait.png"
+  },
+  "unitshard_TIEFIGHTERFIRSTORDER": {
+    "name": "First Order TIE Fighter blueprints",
+    "file": "unitshard-tiefighterfirstorder.png",
+    "source": "https://swgoh.wiki/images/6/6f/Unit-Ship-First_Order_TIE_Fighter-portrait.png"
+  },
+  "108Salvage": {
+    "name": "Mk 3 Carbanti Sensor Array Salvage",
+    "file": "108salvage.png",
+    "source": "https://swgoh.wiki/images/9/96/Gear-Mk_3_Carbanti_Sensor_Array_Salvage.png"
+  },
+  "unitshard_K2SO": {
+    "name": "K-2SO shards",
+    "file": "unitshard-k2so.png",
+    "source": "https://swgoh.wiki/images/f/f4/Unit-Character-K-2SO-portrait.png"
+  },
+  "149Salvage": {
+    "name": "Mk 6 Arakyd Droid Caller Salvage",
+    "file": "149salvage.png",
+    "source": "https://swgoh.wiki/images/d/df/Gear-Mk_6_Arakyd_Droid_Caller_Salvage.png"
+  },
+  "151Salvage": {
+    "name": "Mk 7 Chiewab Hypo Syringe Salvage",
+    "file": "151salvage.png",
+    "source": "https://swgoh.wiki/images/c/ca/Gear-Mk_7_Chiewab_Hypo_Syringe_Salvage.png"
+  },
+  "unitshard_CHIRRUTIMWE": {
+    "name": "Chirrut Îmwe shards",
+    "file": "unitshard-chirrutimwe.png",
+    "source": "https://swgoh.wiki/images/d/d0/Unit-Character-Chirrut_Imwe-portrait.png"
+  },
+  "unitshard_KANANJARRUSS3": {
+    "name": "Kanan Jarrus shards",
+    "file": "unitshard-kananjarruss3.png",
+    "source": "https://swgoh.wiki/images/5/5b/Unit-Character-Kanan_Jarrus-portrait.png"
+  },
+  "unitshard_BAZEMALBUS": {
+    "name": "Baze Malbus shards",
+    "file": "unitshard-bazemalbus.png",
+    "source": "https://swgoh.wiki/images/1/14/Unit-Character-Baze_Malbus-portrait.png"
+  },
+  "unitshard_ZEBS3": {
+    "name": "Garazeb \"Zeb\" Orrelios shards",
+    "file": "unitshard-zebs3.png",
+    "source": "https://swgoh.wiki/images/8/88/Unit-Character-Garazeb_%22Zeb%22_Orrelios-portrait.png"
+  },
+  "unitshard_EZRABRIDGERS3": {
+    "name": "Ezra Bridger shards",
+    "file": "unitshard-ezrabridgers3.png",
+    "source": "https://swgoh.wiki/images/9/91/Unit-Character-Ezra_Bridger-portrait.png"
+  },
+  "unitshard_CHOPPERS3": {
+    "name": "Chopper shards",
+    "file": "unitshard-choppers3.png",
+    "source": "https://swgoh.wiki/images/f/f4/Unit-Character-Chopper-portrait.png"
+  },
+  "unitshard_HERASYNDULLAS3": {
+    "name": "Hera Syndulla shards",
+    "file": "unitshard-herasyndullas3.png",
+    "source": "https://swgoh.wiki/images/f/f1/Unit-Character-Hera_Syndulla-portrait.png"
+  },
+  "unitshard_GHOST": {
+    "name": "Ghost blueprints",
+    "file": "unitshard-ghost.png",
+    "source": "https://swgoh.wiki/images/f/f1/Unit-Ship-Ghost-portrait.png"
+  },
+  "unitshard_SABINEWRENS3": {
+    "name": "Sabine Wren shards",
+    "file": "unitshard-sabinewrens3.png",
+    "source": "https://swgoh.wiki/images/f/fa/Unit-Character-Sabine_Wren-portrait.png"
+  },
+  "unitshard_SCARIFREBEL": {
+    "name": "Scarif Rebel Pathfinder shards",
+    "file": "unitshard-scarifrebel.png",
+    "source": "https://swgoh.wiki/images/e/ee/Unit-Character-Scarif_Rebel_Pathfinder-portrait.png"
+  },
+  "unitshard_HOTHREBELSOLDIER": {
+    "name": "Hoth Rebel Soldier shards",
+    "file": "unitshard-hothrebelsoldier.png",
+    "source": "https://swgoh.wiki/images/6/6f/Unit-Character-Hoth_Rebel_Soldier-portrait.png"
+  },
+  "unitshard_HOTHREBELSCOUT": {
+    "name": "Hoth Rebel Scout shards",
+    "file": "unitshard-hothrebelscout.png",
+    "source": "https://swgoh.wiki/images/a/ac/Unit-Character-Hoth_Rebel_Scout-portrait.png"
+  },
+  "unitshard_OLDBENKENOBI": {
+    "name": "Obi-Wan Kenobi (Old Ben) shards",
+    "file": "unitshard-oldbenkenobi.png",
+    "source": "https://swgoh.wiki/images/0/08/Unit-Character-Obi-Wan_Kenobi_%28Old_Ben%29-portrait.png"
+  },
+  "unitshard_UWINGROGUEONE": {
+    "name": "Cassian's U-wing blueprints",
+    "file": "unitshard-uwingrogueone.png",
+    "source": "https://swgoh.wiki/images/f/ff/Unit-Ship-Cassian%27s_U-wing-portrait.png"
+  },
+  "unitshard_PRINCESSLEIA": {
+    "name": "Princess Leia shards",
+    "file": "unitshard-princessleia.png",
+    "source": "https://swgoh.wiki/images/e/e1/Unit-Character-Princess_Leia-portrait.png"
+  },
+  "unitshard_WEDGEANTILLES": {
+    "name": "Wedge Antilles shards",
+    "file": "unitshard-wedgeantilles.png",
+    "source": "https://swgoh.wiki/images/5/56/Unit-Character-Wedge_Antilles-portrait.png"
+  },
+  "unitshard_PHANTOM2": {
+    "name": "Phantom II blueprints",
+    "file": "unitshard-phantom2.png",
+    "source": "https://swgoh.wiki/images/a/a0/Unit-Ship-Phantom_II-portrait.png"
+  },
+  "unitshard_STORMTROOPERHAN": {
+    "name": "Stormtrooper Han shards",
+    "file": "unitshard-stormtrooperhan.png",
+    "source": "https://swgoh.wiki/images/f/fe/Unit-Character-Stormtrooper_Han-portrait.png"
+  },
+  "unitshard_UWINGSCARIF": {
+    "name": "Bistan's U-wing blueprints",
+    "file": "unitshard-uwingscarif.png",
+    "source": "https://swgoh.wiki/images/e/ee/Unit-Ship-Bistan%27s_U-wing-portrait.png"
+  },
+  "unitshard_LUKESKYWALKER": {
+    "name": "Luke Skywalker (Farmboy) shards",
+    "file": "unitshard-lukeskywalker.png",
+    "source": "https://swgoh.wiki/images/5/57/Unit-Character-Luke_Skywalker_%28Farmboy%29-portrait.png"
+  },
+  "unitshard_ADMINISTRATORLANDO": {
+    "name": "Lando Calrissian shards",
+    "file": "unitshard-administratorlando.png",
+    "source": "https://swgoh.wiki/images/8/8d/Unit-Character-Lando_Calrissian-portrait.png"
+  },
+  "unitshard_XWINGRED3": {
+    "name": "Biggs Darklighter's X-wing blueprints",
+    "file": "unitshard-xwingred3.png",
+    "source": "https://swgoh.wiki/images/1/18/Unit-Ship-Biggs_Darklighter%27s_X-wing-portrait.png"
+  },
+  "unitshard_HOTHLEIA": {
+    "name": "Rebel Officer Leia Organa shards",
+    "file": "unitshard-hothleia.png",
+    "source": "https://swgoh.wiki/images/3/31/Unit-Character-Rebel_Officer_Leia_Organa-portrait.png"
+  },
+  "unitshard_BIGGSDARKLIGHTER": {
+    "name": "Biggs Darklighter shards",
+    "file": "unitshard-biggsdarklighter.png",
+    "source": "https://swgoh.wiki/images/b/ba/Unit-Character-Biggs_Darklighter-portrait.png"
+  },
+  "unitshard_XWINGRED2": {
+    "name": "Wedge Antilles's X-wing blueprints",
+    "file": "unitshard-xwingred2.png",
+    "source": "https://swgoh.wiki/images/3/39/Unit-Ship-Wedge_Antilles%27s_X-wing-portrait.png"
+  },
+  "shipability_mat_C": {
+    "name": "Ship Ability Material Mk III",
+    "file": "shipability-mat-c.png",
+    "source": "https://swgoh.wiki/images/3/3e/Game-Icon-Ship_Ability_Material_Mk_III.png"
+  },
+  "unitshard_FULCRUMAHSOKA": {
+    "name": "Ahsoka Tano (Fulcrum) shards",
+    "file": "unitshard-fulcrumahsoka.png",
+    "source": "https://swgoh.wiki/images/6/6f/Unit-Character-Ahsoka_Tano_%28Fulcrum%29-portrait.png"
+  },
+  "unitshard_HOTHHAN": {
+    "name": "Captain Han Solo shards",
+    "file": "unitshard-hothhan.png",
+    "source": "https://swgoh.wiki/images/e/e2/Unit-Character-Captain_Han_Solo-portrait.png"
+  },
+  "unitshard_LOBOT": {
+    "name": "Lobot shards",
+    "file": "unitshard-lobot.png",
+    "source": "https://swgoh.wiki/images/c/ce/Unit-Character-Lobot-portrait.png"
+  },
+  "unitshard_ADMIRALACKBAR": {
+    "name": "Admiral Ackbar shards",
+    "file": "unitshard-admiralackbar.png",
+    "source": "https://swgoh.wiki/images/2/2c/Unit-Character-Admiral_Ackbar-portrait.png"
+  },
+  "unitshard_HERMITYODA": {
+    "name": "Hermit Yoda shards",
+    "file": "unitshard-hermityoda.png",
+    "source": "https://swgoh.wiki/images/0/08/Unit-Character-Hermit_Yoda-portrait.png"
+  },
+  "unitshard_PADAWANOBIWAN": {
+    "name": "Padawan Obi-Wan shards",
+    "file": "unitshard-padawanobiwan.png",
+    "source": "https://swgoh.wiki/images/7/70/Unit-Character-Padawan_Obi-Wan-portrait.png"
+  },
+  "unitshard_GENERALKENOBI": {
+    "name": "General Kenobi shards",
+    "file": "unitshard-generalkenobi.png",
+    "source": "https://swgoh.wiki/images/1/19/Unit-Character-General_Kenobi-portrait.png"
+  },
+  "unitshard_LUMINARAUNDULI": {
+    "name": "Luminara Unduli shards",
+    "file": "unitshard-luminaraunduli.png",
+    "source": "https://swgoh.wiki/images/a/a6/Unit-Character-Luminara_Unduli-portrait.png"
+  },
+  "unitshard_BARRISSOFFEE": {
+    "name": "Barriss Offee shards",
+    "file": "unitshard-barrissoffee.png",
+    "source": "https://swgoh.wiki/images/b/ba/Unit-Character-Barriss_Offee-portrait.png"
+  },
+  "unitshard_CAPITALMONCALAMARICRUISER": {
+    "name": "Home One blueprints",
+    "file": "unitshard-capitalmoncalamaricruiser.png",
+    "source": "https://swgoh.wiki/images/d/db/Unit-Ship-Home_One-portrait.png"
+  },
+  "unitshard_MASTERQUIGON": {
+    "name": "Master Qui-Gon shards",
+    "file": "unitshard-masterquigon.png",
+    "source": "https://swgoh.wiki/images/b/bb/Unit-Character-Master_Qui-Gon-portrait.png"
+  },
+  "unitshard_SHAAKTI": {
+    "name": "Shaak Ti shards",
+    "file": "unitshard-shaakti.png",
+    "source": "https://swgoh.wiki/images/f/fe/Unit-Character-Shaak_Ti-portrait.png"
+  },
+  "unitshard_KITFISTO": {
+    "name": "Kit Fisto shards",
+    "file": "unitshard-kitfisto.png",
+    "source": "https://swgoh.wiki/images/2/28/Unit-Character-Kit_Fisto-portrait.png"
+  },
+  "unitshard_AAYLASECURA": {
+    "name": "Aayla Secura shards",
+    "file": "unitshard-aaylasecura.png",
+    "source": "https://swgoh.wiki/images/9/9b/Unit-Character-Aayla_Secura-portrait.png"
+  },
+  "PREMIUM": {
+    "name": "Crystals",
+    "file": "premium.png",
+    "source": "https://swgoh.wiki/images/9/99/Game-Icon-Crystal.png"
+  },
+  "MOD_SLICING_SALVAGE_TIER05_04": {
+    "name": "Mk 1 Fusion Coil",
+    "file": "mod-slicing-salvage-tier05-04.png",
+    "source": "https://swgoh.wiki/images/2/26/Game-Icon-Mk_1_Fusion_Coil.png"
+  },
+  "SCV_006": {
+    "name": "Zinbiddle Card",
+    "file": "scv-006.png",
+    "source": "https://swgoh.wiki/images/2/2e/Game-Icon-Zinbiddle_Card.png"
+  },
+  "MOD_SLICING_SALVAGE_TIER05_02": {
+    "name": "Mk 1 Fusion Disk",
+    "file": "mod-slicing-salvage-tier05-02.png",
+    "source": "https://swgoh.wiki/images/e/e8/Game-Icon-Mk_1_Fusion_Disk.png"
+  },
+  "MOD_SLICING_PROMOTION_MATERIAL_T5_TO_T6": {
+    "name": "Mk 2 Pulse Modulator",
+    "file": "mod-slicing-promotion-material-t5-to-t6.png",
+    "source": "https://swgoh.wiki/images/d/dd/Game-Icon-Mk_2_Pulse_Modulator.png"
+  },
+  "MOD_SLICING_SALVAGE_TIER05_05": {
+    "name": "Mk 1 Amplifier",
+    "file": "mod-slicing-salvage-tier05-05.png",
+    "source": "https://swgoh.wiki/images/1/11/Game-Icon-Mk_1_Amplifier.png"
+  },
+  "MOD_SLICING_SALVAGE_TIER06_01": {
+    "name": "Mk 2 Circuit Breaker Module",
+    "file": "mod-slicing-salvage-tier06-01.png",
+    "source": "https://swgoh.wiki/images/b/bf/Game-Icon-Mk_2_Circuit_Breaker_Module.png"
+  },
+  "MOD_SLICING_SALVAGE_TIER05_03": {
+    "name": "Mk 1 Power Flow Control Chip",
+    "file": "mod-slicing-salvage-tier05-03.png",
+    "source": "https://swgoh.wiki/images/1/1c/Game-Icon-Mk_1_Power_Flow_Control_Chip.png"
+  },
+  "SCV_007": {
+    "name": "Impulse Detector",
+    "file": "scv-007.png",
+    "source": "https://swgoh.wiki/images/1/1a/Game-Icon-Impulse_Detector.png"
+  },
+  "MOD_SLICING_SALVAGE_TIER05_06": {
+    "name": "Mk 1 Capacitor",
+    "file": "mod-slicing-salvage-tier05-06.png",
+    "source": "https://swgoh.wiki/images/1/1e/Game-Icon-Mk_1_Capacitor.png"
+  },
+  "SCV_009": {
+    "name": "Gyrda Keypad",
+    "file": "scv-009.png",
+    "source": "https://swgoh.wiki/images/6/67/Game-Icon-Gyrda_Keypad.png"
+  },
+  "SCV_008": {
+    "name": "Aeromagnifier",
+    "file": "scv-008.png",
+    "source": "https://swgoh.wiki/images/6/6a/Game-Icon-Aeromagnifier.png"
+  },
+  "ability_mat_F": {
+    "name": "Ability Material Omicron",
+    "file": "ability-mat-f.png",
+    "source": "https://swgoh.wiki/images/6/6f/Game-Icon-Ability_Material_Omicron.png"
+  },
+  "unitshard_NIGHTTROOPER": {
+    "name": "Night Trooper shards",
+    "file": "unitshard-nighttrooper.png",
+    "source": "https://swgoh.wiki/images/2/28/Unit-Character-Night_Trooper-portrait.png"
+  },
+  "unitshard_DEATHTROOPERPERIDEA": {
+    "name": "Death Trooper (Peridea) shards",
+    "file": "unitshard-deathtrooperperidea.png",
+    "source": "https://swgoh.wiki/images/5/51/Unit-Character-Death_Trooper_%28Peridea%29-portrait.png"
+  },
+  "SCV_010": {
+    "name": "Droid Brain",
+    "file": "scv-010.png",
+    "source": "https://swgoh.wiki/images/0/0f/Game-Icon-Droid_Brain.png"
+  },
+  "unitshard_CAPTAINENOCH": {
+    "name": "Captain Enoch shards",
+    "file": "unitshard-captainenoch.png",
+    "source": "https://swgoh.wiki/images/f/fe/Unit-Character-Captain_Enoch-portrait.png"
+  }
+}

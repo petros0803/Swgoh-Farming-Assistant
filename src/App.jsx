@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import styled from 'styled-components';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import Header from './components/Header';
@@ -9,6 +10,8 @@ import MyRoadmapPage from './pages/MyRoadmapPage';
 import RelicCalculatorPage from './pages/RelicCalculatorPage';
 import RoadmapPage from './pages/RoadmapPage';
 import { ThemeRoot } from './theme';
+
+const AssaultBattlesPage = lazy(() => import('./pages/AssaultBattlesPage'));
 
 export default function App() {
   return (
@@ -47,6 +50,14 @@ function AppShell() {
           <Route path="/" element={<RoadmapPage />} />
           <Route path="/my-roadmap" element={<MyRoadmapPage />} />
           <Route path="/all-farms" element={<AllFarmsPage />} />
+          <Route
+            path="/assault-battles"
+            element={(
+              <Suspense fallback={<RouteLoading>Loading Assault Battles guide…</RouteLoading>}>
+                <AssaultBattlesPage />
+              </Suspense>
+            )}
+          />
           <Route path="/relic-calculator" element={<RelicCalculatorPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
@@ -67,4 +78,10 @@ const Main = styled.main`
   ${({ theme }) => theme.media.phone} {
     padding: ${({ theme }) => theme.space[10]} ${({ theme }) => theme.space[8]} calc(${({ theme }) => theme.space[10]} + env(safe-area-inset-bottom));
   }
+`;
+
+const RouteLoading = styled.div`
+  padding: ${({ theme }) => theme.space[16]};
+  color: ${({ theme }) => theme.colors.muted};
+  text-align: center;
 `;

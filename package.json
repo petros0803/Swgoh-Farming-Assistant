@@ -9,6 +9,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:assault-icons": "node scripts/build_assault_reward_icons.mjs",
+    "build:assaults": "node scripts/build_assault_battles.mjs",
     "build:farms": "node scripts/build_all_farms.mjs",
     "build:sources": "node scripts/build_farming_sources.mjs",
     "preview": "vite preview",

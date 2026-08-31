@@ -11,6 +11,7 @@ const NAV_ITEMS = [
   { to: '/', label: '✨ Recommended Roadmap' },
   { to: '/my-roadmap', label: '🗺️ My Roadmap' },
   { to: '/all-farms', label: '📜 All Farms' },
+  { to: '/assault-battles', label: '⚔️ Assault Battles' },
   { to: '/relic-calculator', label: '⚙️ Relic Calculator' }
 ];
 
