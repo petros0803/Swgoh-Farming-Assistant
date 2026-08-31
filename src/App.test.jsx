@@ -199,6 +199,26 @@ describe('App', () => {
     expect(screen.getByText(/Journey: Grand Master Yoda/)).toBeInTheDocument();
   });
 
+  it('calculates a roster character through Relic 10', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    await user.type(screen.getByLabelText('Ally Code'), '123456789');
+    await user.click(screen.getByRole('button', { name: /sync roster/i }));
+    await waitFor(() => expect(screen.getByText('Bogdan')).toBeInTheDocument());
+
+    await user.click(screen.getByRole('link', { name: /relic calculator/i }));
+    expect(screen.getByRole('heading', { name: /plan one character/i })).toBeInTheDocument();
+    expect(screen.getByRole('option', { name: /Admiral Piett — R8/i })).toBeInTheDocument();
+
+    await user.selectOptions(screen.getByText('Target relic level').parentElement.querySelector('select'), '10');
+
+    expect(screen.getAllByText('Relic 9').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('Relic 10').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('Corrupted Signal Data').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('Coaxial Servomotor').length).toBeGreaterThan(0);
+  });
+
   it('builds and persists a custom ordered roadmap', async () => {
     const user = userEvent.setup();
     render(<App />);
