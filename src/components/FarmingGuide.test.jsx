@@ -167,6 +167,25 @@ describe('FarmingGuide', () => {
     expect(backgroundColor).toMatch(/^rgb\(/);
   });
 
+  it('keeps a journey on the map when its unlocked reward owes stars', async () => {
+    const user = userEvent.setup();
+    // C-3PO is unlocked at six stars, and JKL wants seven. Those shards only
+    // come from re-running the event, so it must not be filed away as done.
+    renderGuide({
+      data: { name: 'Test' },
+      units: [{ data: { base_id: 'C3POLEGENDARY', rarity: 6, relic_tier: 5, gear_level: 13 } }]
+    });
+    await openMap(user);
+
+    const map = screen.getByRole('heading', { name: /everything connected/i })
+      .closest('section');
+    const journey = within(map).getByText('Contact Protocol').closest('article');
+
+    expect(journey).toHaveTextContent('6★ · re-run for 7★');
+    expect(journey).toHaveTextContent(/You own C-3PO at 6★ and the plan needs 7★/);
+    expect(journey).toHaveTextContent(/only come from running this event again/);
+  });
+
   it('closes the preview when leaving the dependency map', async () => {
     const user = userEvent.setup();
     renderGuide();

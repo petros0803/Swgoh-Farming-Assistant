@@ -16,6 +16,8 @@ export default function FarmDashboard({
   roadmap,
   startCollapsed = false,
   showGuide = false,
+  poolChoices,
+  onTogglePoolUnit,
   placeholderTitle,
   placeholderBody
 }) {
@@ -35,8 +37,8 @@ export default function FarmDashboard({
   // Shared by the farming guide and by every unit card's hover preview, so the
   // acquisition data behind both is computed once.
   const guide = useMemo(
-    () => (roster ? buildFarmingGuide(roster, roadmap) : null),
-    [roster, roadmap]
+    () => (roster ? buildFarmingGuide(roster, roadmap, undefined, poolChoices) : null),
+    [roster, roadmap, poolChoices]
   );
 
   const filtered = useMemo(() => {
@@ -71,7 +73,9 @@ export default function FarmDashboard({
           </Placeholder>
         </PreviewNote>
       )}
-      {dashboard && showGuide && <FarmingGuide guide={guide} />}
+      {dashboard && showGuide && (
+        <FarmingGuide guide={guide} onTogglePoolUnit={onTogglePoolUnit} />
+      )}
       {dashboard && <StatsOverview dashboard={dashboard} />}
       {dashboard && (
         <Toolbar

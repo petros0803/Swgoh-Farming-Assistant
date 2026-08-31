@@ -2,23 +2,18 @@ import { allFarmsRoadmap } from '../data/allFarmsRoadmap';
 import { storeCurrency } from '../data/alternateFarmingSources';
 import { isBountyHunterFleet } from '../data/factionPools';
 import { lightspeedTokenCovers } from '../data/gameRules';
+import {
+  getFarmUnits,
+  getPoolRequirement,
+  sanitizePoolChoices
+} from '../data/poolRequirements';
 import { getRecommendedSquad } from '../data/recommendedSquads';
 import { buildRosterMap } from './dashboard';
 import { buildFarmingEstimate } from './farmingEstimates';
 import { evaluateUnit } from './unitProgress';
 
-const POOL_SIZES = {
-  'Contact Protocol': 5,
-  'One Famous Wookiee': 5,
-  'Daring Droid': 5,
-  'Flight of the Falcon': 4
-};
-
 function unitsOf(farm) {
-  return [
-    ...(farm.characters ?? []).map((unit) => ({ ...unit, kind: 'character' })),
-    ...(farm.ships ?? []).map((unit) => ({ ...unit, kind: 'ship' }))
-  ];
+  return getFarmUnits(farm);
 }
 
 function normalizedName(value) {
@@ -109,7 +104,7 @@ function compareFarmPriority(a, b) {
 }
 
 function farmIsPool(farm) {
-  return Boolean(POOL_SIZES[farm.event]);
+  return Boolean(getPoolRequirement(farm));
 }
 
 function buildRewardIdMap(farms) {
@@ -120,8 +115,13 @@ function buildRewardIdMap(farms) {
   return idsByName;
 }
 
-function selectPoolUnits(farm, rosterMap, rootUseCount) {
-  const limit = POOL_SIZES[farm.event];
+function selectPoolUnits(farm, rosterMap, rootUseCount, chosenIds) {
+  const limit = getPoolRequirement(farm).count;
+  if (Array.isArray(chosenIds)) {
+    const selectedIds = new Set(sanitizePoolChoices(farm, chosenIds));
+    return unitsOf(farm).filter((unit) => selectedIds.has(unit.id));
+  }
+
   const recommended = getRecommendedSquad(farm);
   const recommendedOrder = new Map(
     (recommended?.units ?? []).map((id, index, units) => [id, units.length - index])
@@ -163,7 +163,12 @@ function collectRootUseCount(roadmap) {
  * the closest faction-pool squad, and start the longest or least predictable
  * shard farms early. Node ETAs use current game data and documented assumptions.
  */
-export function buildFarmingGuide(playerData, roadmap, catalog = allFarmsRoadmap) {
+export function buildFarmingGuide(
+  playerData,
+  roadmap,
+  catalog = allFarmsRoadmap,
+  poolChoices = {}
+) {
   const rosterMap = buildRosterMap(playerData);
   const rootUseCount = collectRootUseCount(roadmap);
   const catalogByEvent = new Map(catalog.map((farm) => [farm.event, farm]));
@@ -202,8 +207,15 @@ export function buildFarmingGuide(playerData, roadmap, catalog = allFarmsRoadmap
 
     visiting.add(event);
     const allUnits = unitsOf(source);
-    const selected = farmIsPool(source)
-      ? selectPoolUnits(source, rosterMap, rootUseCount)
+    const isPool = farmIsPool(source);
+    // The player can pick the squad for any pool event on the plan, including a
+    // prerequisite journey the plan pulled in. Without a pick, the roster-aware
+    // automatic selection applies.
+    const chosenIds = isPool
+      ? poolChoices[event] ?? (isRoot ? roadmapFarm?.selectedUnitIds : undefined)
+      : undefined;
+    const selected = isPool
+      ? selectPoolUnits(source, rosterMap, rootUseCount, chosenIds)
       : allUnits;
     const selectedIds = new Set(selected.map((unit) => unit.id));
 
@@ -215,8 +227,10 @@ export function buildFarmingGuide(playerData, roadmap, catalog = allFarmsRoadmap
         id: rewardIds.get(normalizedName(source.reward?.name)) ?? `reward:${event}`
       },
       isRoot,
-      isPool: farmIsPool(source),
-      poolSize: POOL_SIZES[event] ?? null,
+      isPool,
+      poolSize: getPoolRequirement(source)?.count ?? null,
+      poolLabel: getPoolRequirement(source)?.label ?? null,
+      poolChoiceIsUserPicked: Array.isArray(chosenIds),
       units: allUnits,
       selectedIds,
       dependencies: []
@@ -375,7 +389,10 @@ export function buildFarmingGuide(playerData, roadmap, catalog = allFarmsRoadmap
 
     const selected = unitRows.filter((unit) => unit.selected);
     const readyCount = selected.filter((unit) => unit.progress.isComplete).length;
-    const requirementsReady = selected.length > 0 && readyCount === selected.length;
+    const requirementsReady =
+      selected.length > 0 &&
+      readyCount === selected.length &&
+      (!farm.isPool || selected.length === farm.poolSize);
     const rewardOwned = Boolean(rosterMap[farm.reward.id]);
 
     // Unlocking is not the same as meeting the level a later farm asks for: an
@@ -386,6 +403,14 @@ export function buildFarmingGuide(playerData, roadmap, catalog = allFarmsRoadmap
         ? rewardUnit.progress.statusText
         : null;
 
+    // Stars for an event reward come from running the event again, so a star
+    // gate keeps the journey and its squad on the plan. A relic gate does not:
+    // relic materials have no event to run, so that work sits with the unit.
+    const needsRerun = Boolean(rewardOwned && rewardUnit?.selected && !rewardUnit.progress.starsMet);
+
+    const isComplete =
+      (farm.isRoot ? rewardOwned && requirementsReady : rewardOwned) && !needsRerun;
+
     return {
       ...farm,
       units: unitRows,
@@ -393,11 +418,17 @@ export function buildFarmingGuide(playerData, roadmap, catalog = allFarmsRoadmap
       selectedCount: selected.length,
       rewardOwned,
       rewardShortfall,
-      // A prerequisite journey exists only to grant its reward, so owning the
-      // unit finishes it. Roadmap targets also carry end-state relic goals, so
-      // they stay open until those targets are met too.
-      isComplete: farm.isRoot ? rewardOwned && requirementsReady : rewardOwned,
-      readyToRun: !rewardOwned && requirementsReady
+      rewardRerun: needsRerun
+        ? {
+          currentStars: rewardUnit.progress.currentStars,
+          targetStars: rewardUnit.progress.starTarget
+        }
+        : null,
+      // A prerequisite journey exists only to grant its reward, so meeting its
+      // star gate finishes it. Roadmap targets also carry end-state relic
+      // goals, so they stay open until those targets are met too.
+      isComplete,
+      readyToRun: !isComplete && requirementsReady
     };
   });
 

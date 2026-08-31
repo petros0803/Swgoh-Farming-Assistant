@@ -1,3 +1,4 @@
+import { allFarmsRoadmap } from '../data/allFarmsRoadmap';
 import { farmingRoadmap } from '../data/farmingRoadmap';
 import { buildFarmingGuide } from './farmingGuide';
 
@@ -321,6 +322,73 @@ describe('buildFarmingGuide', () => {
     expect(guide.unitById.get('MILLENNIUMFALCON').progress.isComplete).toBe(false);
     expect(guide.queue.some((unit) => unit.id === 'MILLENNIUMFALCON')).toBe(false);
     expect(guide.eventUnlocks.some((unit) => unit.id === 'MILLENNIUMFALCON')).toBe(true);
+
+    // The event is the shard source, so it cannot be finished business yet.
+    expect(falconJourney.isComplete).toBe(false);
+    expect(falconJourney.rewardRerun).toEqual({ currentStars: 6, targetStars: 7 });
+  });
+
+  it('keeps a journey open when its unlocked reward is short of the star gate', () => {
+    const jabba = allFarmsRoadmap.find((farm) => farm.event === 'Greetings, Exalted One');
+    // Jabba wants C-3PO at relic 7. A gear 13, relic 0, six-star C-3PO is
+    // unlocked but still owes a seventh star, which only the event grants.
+    const guide = buildFarmingGuide(
+      {
+        data: { name: 'Test' },
+        units: [{ data: { base_id: 'C3POLEGENDARY', rarity: 6, relic_tier: 2, gear_level: 13 } }]
+      },
+      [jabba]
+    );
+    const contactProtocol = guide.farmByEvent.get('Contact Protocol');
+
+    expect(contactProtocol.rewardOwned).toBe(true);
+    expect(contactProtocol.isComplete).toBe(false);
+    expect(contactProtocol.rewardShortfall).toBe('Need 7★');
+    expect(contactProtocol.rewardRerun).toEqual({ currentStars: 6, targetStars: 7 });
+
+    // The Ewok squad is real work again: the event has to be run to finish it.
+    const ewoks = guide.queue.filter((unit) => unit.neededFor.includes('Contact Protocol'));
+    expect(ewoks).toHaveLength(5);
+    expect(guide.eventUnlocks.some((unit) => unit.id === 'C3POLEGENDARY')).toBe(true);
+  });
+
+  it('treats a relic-only shortfall as a finished journey', () => {
+    // Seven stars satisfies the event; Leia's relic 8 does not come from it.
+    const guide = buildFarmingGuide(
+      {
+        data: { name: 'Test' },
+        units: [{ data: { base_id: 'R2D2_LEGENDARY', rarity: 7, relic_tier: 2, gear_level: 13 } }]
+      },
+      farmingRoadmap
+    );
+    const daringDroid = guide.farmByEvent.get('Daring Droid');
+
+    expect(daringDroid.isComplete).toBe(true);
+    expect(daringDroid.rewardRerun).toBeNull();
+    expect(daringDroid.rewardShortfall).toBe('Need R8');
+    // Thrawn is farmed for this event alone, so nothing keeps him on the plan.
+    expect(guide.queue.some((unit) => unit.id === 'GRANDADMIRALTHRAWN')).toBe(false);
+  });
+
+  it('calls a re-run event ready once its squad meets the gate again', () => {
+    const jabba = allFarmsRoadmap.find((farm) => farm.event === 'Greetings, Exalted One');
+    const guide = buildFarmingGuide(
+      {
+        data: { name: 'Test' },
+        units: [
+          { data: { base_id: 'C3POLEGENDARY', rarity: 6, relic_tier: 2, gear_level: 13 } },
+          ...['PAPLOO', 'EWOKELDER', 'WICKET', 'LOGRAY', 'CHIEFCHIRPA'].map((id) => ({
+            data: { base_id: id, rarity: 7, relic_tier: 0, gear_level: 12 }
+          }))
+        ]
+      },
+      [jabba]
+    );
+    const farm = guide.farmByEvent.get('Contact Protocol');
+
+    expect(farm.readyCount).toBe(5);
+    expect(farm.readyToRun).toBe(true);
+    expect(farm.isComplete).toBe(false);
   });
 
   it('will not count a relic-3 C-3PO as ready for JKL below seven stars', () => {

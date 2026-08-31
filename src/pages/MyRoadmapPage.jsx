@@ -4,7 +4,15 @@ import Placeholder from '../components/ui/Placeholder';
 import { useMyRoadmap } from '../hooks/useMyRoadmap';
 
 export default function MyRoadmapPage() {
-  const { roadmap, availableFarms, addFarm, removeFarm, moveFarm } = useMyRoadmap();
+  const {
+    roadmap,
+    poolChoices,
+    availableFarms,
+    addFarm,
+    removeFarm,
+    moveFarm,
+    togglePoolUnit
+  } = useMyRoadmap();
 
   return (
     <>
@@ -14,6 +22,7 @@ export default function MyRoadmapPage() {
         onAdd={addFarm}
         onRemove={removeFarm}
         onMove={moveFarm}
+        onTogglePoolUnit={togglePoolUnit}
       />
 
       {roadmap.length === 0 ? (
@@ -24,6 +33,8 @@ export default function MyRoadmapPage() {
         <FarmDashboard
           roadmap={roadmap}
           showGuide
+          poolChoices={poolChoices}
+          onTogglePoolUnit={togglePoolUnit}
           placeholderTitle="Your roadmap is ready"
           placeholderBody="Enter your SWGoH Ally Code above to compare your roster with your selected farms."
         />
