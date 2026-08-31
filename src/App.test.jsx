@@ -199,6 +199,19 @@ describe('App', () => {
     expect(screen.getByText(/Journey: Grand Master Yoda/)).toBeInTheDocument();
   });
 
+  it('opens the static Assault Battles guide without syncing a roster', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    await user.click(screen.getByRole('link', { name: /assault battles/i }));
+
+    expect(await screen.findByRole('heading', {
+      name: /requirements, rewards, and teams for every tier/i
+    })).toBeInTheDocument();
+    expect(screen.getByText('Showing 9 of 9 events')).toBeInTheDocument();
+    expect(globalThis.fetch).not.toHaveBeenCalled();
+  });
+
   it('calculates a roster character through Relic 10', async () => {
     const user = userEvent.setup();
     render(<App />);
