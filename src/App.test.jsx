@@ -10,6 +10,15 @@ const playerPayload = {
   ]
 };
 
+/** Opens the roadmap farm picker, filters it, and takes the first result. */
+async function pickFarm(user, query) {
+  await user.click(screen.getByRole('button', { name: 'Choose a farm' }));
+  await user.type(screen.getByRole('combobox', { name: 'Choose a farm' }), query);
+
+  const list = screen.getByRole('listbox', { name: 'Farms' });
+  await user.click(within(list).getAllByRole('option')[0]);
+}
+
 describe('App', () => {
   beforeEach(() => {
     window.history.pushState({}, '', import.meta.env.BASE_URL);
@@ -196,10 +205,9 @@ describe('App', () => {
 
     await user.click(screen.getByRole('link', { name: /my roadmap/i }));
 
-    const picker = screen.getByLabelText('Choose a farm');
-    await user.selectOptions(picker, 'Discarded Doctrine');
+    await pickFarm(user, 'Executor');
     await user.click(screen.getByRole('button', { name: /add farm/i }));
-    await user.selectOptions(picker, 'Rebel with a cause');
+    await pickFarm(user, 'Leia Organa');
     await user.click(screen.getByRole('button', { name: /add farm/i }));
 
     expect(screen.getByText('2 selected')).toBeInTheDocument();
@@ -211,6 +219,96 @@ describe('App', () => {
       const stored = JSON.parse(window.localStorage.getItem('swgoh-my-roadmap'));
       expect(stored.farmKeys).toEqual(['Rebel with a cause', 'Discarded Doctrine']);
     });
+  });
+
+  it('lets the player pick which faction-pool units to farm', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    await user.click(screen.getByRole('link', { name: /my roadmap/i }));
+    await pickFarm(user, 'C-3PO');
+    await user.click(screen.getByRole('button', { name: /add farm/i }));
+
+    const chooser = screen.getByRole('group', { name: /choose 5 ewoks for c-3po/i });
+
+    // The published squad is pre-selected, and the pool is capped at five.
+    expect(within(chooser).getByText('5 / 5 selected')).toBeInTheDocument();
+    expect(within(chooser).getByLabelText('Paploo')).toBeChecked();
+    expect(within(chooser).getByLabelText('Teebo')).toBeDisabled();
+
+    await user.click(within(chooser).getByLabelText('Wicket'));
+    await user.click(within(chooser).getByLabelText('Teebo'));
+
+    expect(within(chooser).getByLabelText('Wicket')).not.toBeChecked();
+    expect(within(chooser).getByLabelText('Teebo')).toBeChecked();
+
+    await waitFor(() => {
+      const stored = JSON.parse(window.localStorage.getItem('swgoh-my-roadmap'));
+      expect(stored.poolChoices['Contact Protocol']).toEqual([
+        'PAPLOO',
+        'EWOKELDER',
+        'LOGRAY',
+        'CHIEFCHIRPA',
+        'TEEBO'
+      ]);
+    });
+
+    // The chosen squad is what the roadmap table and the map report on.
+    await user.type(screen.getByLabelText('Ally Code'), '123456789');
+    await user.click(screen.getByRole('button', { name: /sync roster/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText('Bogdan')).toBeInTheDocument();
+    });
+
+    const phase = screen.getByText(/Journey: C-3PO/).closest('section');
+
+    expect(within(phase).getByText('0 / 5 Ready (0%)')).toBeInTheDocument();
+    expect(within(phase).getByText(/Showing your farm squad: 5 of 5 Ewoks selected/))
+      .toBeInTheDocument();
+    expect(within(phase).getByText('Teebo')).toBeInTheDocument();
+    expect(within(phase).queryByText('Wicket')).not.toBeInTheDocument();
+  });
+
+  it('lets the player pick the squad of a prerequisite journey from the map', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    // Jabba pulls in the C-3PO event on its own, so the only place to choose
+    // its Ewoks is the dependency map where the plan shows it.
+    await user.click(screen.getByRole('link', { name: /my roadmap/i }));
+    await pickFarm(user, 'Jabba the Hutt');
+    await user.click(screen.getByRole('button', { name: /add farm/i }));
+    await user.type(screen.getByLabelText('Ally Code'), '123456789');
+    await user.click(screen.getByRole('button', { name: /sync roster/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText('Bogdan')).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByRole('tab', { name: /interactive dependency map/i }));
+
+    const journey = screen.getByText('Contact Protocol').closest('article');
+    expect(within(journey).getByText(/Personalized fast squad: 5 selected/)).toBeInTheDocument();
+
+    await user.click(within(journey).getByRole('button', { name: 'Choose squad' }));
+
+    const chooser = within(journey).getByRole('group', { name: /choose 5 ewoks for c-3po/i });
+    expect(within(chooser).getByText('5 / 5 selected')).toBeInTheDocument();
+
+    // Editing starts from the squad the plan already picked, so one swap leaves
+    // a full squad rather than a squad of one.
+    await user.click(within(chooser).getByLabelText('Wicket'));
+    await user.click(within(chooser).getByLabelText('Teebo'));
+
+    await waitFor(() => {
+      const stored = JSON.parse(window.localStorage.getItem('swgoh-my-roadmap'));
+      expect(stored.poolChoices['Contact Protocol']).toHaveLength(5);
+      expect(stored.poolChoices['Contact Protocol']).toContain('TEEBO');
+      expect(stored.poolChoices['Contact Protocol']).not.toContain('WICKET');
+    });
+
+    expect(within(journey).getByText(/Your chosen squad: 5 of 5 picked/)).toBeInTheDocument();
   });
 
   it('starts dark and persists a light theme choice', async () => {

@@ -6,6 +6,16 @@ export function relicLevel(unit) {
   return unit && unit.relic_tier > 2 ? unit.relic_tier - 2 : 0;
 }
 
+/**
+ * Stars a requirement really asks for. An omitted star target means the event
+ * only named a relic level, so the game's rarity gate for that relic applies
+ * instead of silently requiring 7★.
+ */
+export function starTargetOf(target) {
+  const relicTarget = target?.targetR ?? 0;
+  return target?.targetStars ?? (relicTarget > 0 ? minimumStarsForRelic(relicTarget) : MAX_STARS);
+}
+
 export function evaluateUnit(target, unit) {
   const currentStars = unit ? unit.rarity : 0;
   const currentRelic = relicLevel(unit);
@@ -15,9 +25,7 @@ export function evaluateUnit(target, unit) {
   // star level with no relic (faction squads, ships) or a relic level, and a
   // unit is only ready when it satisfies every gate that applies to it.
   const relicTarget = target.targetR ?? 0;
-  // An omitted star target means the event only named a relic level. Apply
-  // the game's rarity gate for that relic instead of silently requiring 7★.
-  const starTarget = target.targetStars ?? (relicTarget > 0 ? minimumStarsForRelic(relicTarget) : MAX_STARS);
+  const starTarget = starTargetOf(target);
 
   const starsMet = currentStars >= starTarget;
   const relicMet = relicTarget === 0 || currentRelic >= relicTarget;
@@ -39,6 +47,8 @@ export function evaluateUnit(target, unit) {
     currentStars,
     currentRelic,
     currentGear,
+    starTarget,
+    starsMet,
     isComplete,
     statusText,
     progressPct,

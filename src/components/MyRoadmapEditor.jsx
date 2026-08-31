@@ -1,19 +1,25 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Button from './ui/Button';
+import FarmPicker from './FarmPicker';
+import PoolSquadPicker from './PoolSquadPicker';
+import { getFarmUnits, getPoolRequirement } from '../data/poolRequirements';
 
 export default function MyRoadmapEditor({
   roadmap,
   availableFarms,
   onAdd,
   onRemove,
-  onMove
+  onMove,
+  onTogglePoolUnit
 }) {
-  const [selectedKey, setSelectedKey] = useState(availableFarms[0]?.event ?? '');
+  const [selectedKey, setSelectedKey] = useState('');
 
+  // A farm that has just been added is no longer offered, so the picker clears
+  // itself instead of pointing at something the roadmap already holds.
   useEffect(() => {
-    if (!availableFarms.some((farm) => farm.event === selectedKey)) {
-      setSelectedKey(availableFarms[0]?.event ?? '');
+    if (selectedKey && !availableFarms.some((farm) => farm.event === selectedKey)) {
+      setSelectedKey('');
     }
   }, [availableFarms, selectedKey]);
 
@@ -34,23 +40,11 @@ export default function MyRoadmapEditor({
       </Header>
 
       <AddRow>
-        <label className="sr-only" htmlFor="farm-picker">Choose a farm</label>
-        <Select
-          id="farm-picker"
+        <FarmPicker
+          farms={availableFarms}
           value={selectedKey}
-          onChange={(event) => setSelectedKey(event.target.value)}
-          disabled={availableFarms.length === 0}
-        >
-          {availableFarms.length === 0 ? (
-            <option value="">All farms are selected</option>
-          ) : (
-            availableFarms.map((farm) => (
-              <option key={farm.event} value={farm.event}>
-                {farm.reward.name} — {farm.event}
-              </option>
-            ))
-          )}
-        </Select>
+          onChange={setSelectedKey}
+        />
         <Button type="button" onClick={handleAdd} disabled={!selectedKey}>
           ADD FARM
         </Button>
@@ -58,46 +52,62 @@ export default function MyRoadmapEditor({
 
       {roadmap.length > 0 && (
         <OrderedList aria-label="Selected farm priority">
-          {roadmap.map((farm, index) => (
-            <FarmRow key={farm.event}>
-              <Priority aria-label={`Priority ${index + 1}`}>{index + 1}</Priority>
-              {farm.reward.icon && <RewardIcon src={farm.reward.icon} alt="" />}
-              <FarmInfo>
-                <FarmName>{farm.reward.name}</FarmName>
-                <EventName>{farm.event}</EventName>
-              </FarmInfo>
-              <Controls>
-                <SmallButton
-                  type="button"
-                  variant="ghost"
-                  onClick={() => onMove(index, -1)}
-                  disabled={index === 0}
-                  aria-label={`Move ${farm.reward.name} up`}
-                  title="Move up"
-                >
-                  ↑
-                </SmallButton>
-                <SmallButton
-                  type="button"
-                  variant="ghost"
-                  onClick={() => onMove(index, 1)}
-                  disabled={index === roadmap.length - 1}
-                  aria-label={`Move ${farm.reward.name} down`}
-                  title="Move down"
-                >
-                  ↓
-                </SmallButton>
-                <RemoveButton
-                  type="button"
-                  variant="ghost"
-                  onClick={() => onRemove(farm.event)}
-                  aria-label={`Remove ${farm.reward.name}`}
-                >
-                  REMOVE
-                </RemoveButton>
-              </Controls>
-            </FarmRow>
-          ))}
+          {roadmap.map((farm, index) => {
+            const requirement = getPoolRequirement(farm);
+
+            return (
+              <RoadmapItem key={farm.event}>
+                <FarmRow>
+                  <Priority aria-label={`Priority ${index + 1}`}>{index + 1}</Priority>
+                  {farm.reward.icon && <RewardIcon src={farm.reward.icon} alt="" />}
+                  <FarmInfo>
+                    <FarmName>{farm.reward.name}</FarmName>
+                    <EventName>{farm.event}</EventName>
+                  </FarmInfo>
+                  <Controls>
+                    <SmallButton
+                      type="button"
+                      variant="ghost"
+                      onClick={() => onMove(index, -1)}
+                      disabled={index === 0}
+                      aria-label={`Move ${farm.reward.name} up`}
+                      title="Move up"
+                    >
+                      ↑
+                    </SmallButton>
+                    <SmallButton
+                      type="button"
+                      variant="ghost"
+                      onClick={() => onMove(index, 1)}
+                      disabled={index === roadmap.length - 1}
+                      aria-label={`Move ${farm.reward.name} down`}
+                      title="Move down"
+                    >
+                      ↓
+                    </SmallButton>
+                    <RemoveButton
+                      type="button"
+                      variant="ghost"
+                      onClick={() => onRemove(farm.event)}
+                      aria-label={`Remove ${farm.reward.name}`}
+                    >
+                      REMOVE
+                    </RemoveButton>
+                  </Controls>
+                </FarmRow>
+
+                {requirement && (
+                  <PoolSquadPicker
+                    units={getFarmUnits(farm)}
+                    requirement={requirement}
+                    rewardName={farm.reward.name}
+                    selectedUnitIds={farm.selectedUnitIds ?? []}
+                    onToggle={(unitId) => onTogglePoolUnit(farm.event, unitId)}
+                  />
+                )}
+              </RoadmapItem>
+            );
+          })}
         </OrderedList>
       )}
     </Panel>
@@ -152,23 +162,6 @@ const AddRow = styled.div`
   }
 `;
 
-const Select = styled.select`
-  flex: 1;
-  min-width: 0;
-  min-height: ${({ theme }) => theme.sizes.tap};
-  background: ${({ theme }) => theme.colors.bg};
-  border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: ${({ theme }) => theme.radii.md};
-  color: ${({ theme }) => theme.colors.text};
-  font: inherit;
-  padding: ${({ theme }) => `${theme.space[5]} ${theme.space[8]}`};
-
-  &:focus {
-    border-color: ${({ theme }) => theme.colors.blue};
-    outline: 3px solid ${({ theme }) => theme.colors.focus};
-  }
-`;
-
 const OrderedList = styled.ol`
   display: grid;
   gap: ${({ theme }) => theme.space[4]};
@@ -177,13 +170,17 @@ const OrderedList = styled.ol`
   list-style: none;
 `;
 
-const FarmRow = styled.li`
-  display: flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.space[5]};
+const RoadmapItem = styled.li`
   background: ${({ theme }) => theme.colors.sunken};
   border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: ${({ theme }) => theme.radii.md};
+  overflow: hidden;
+`;
+
+const FarmRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.space[5]};
   padding: ${({ theme }) => theme.space[5]};
 
   ${({ theme }) => theme.media.phone} {

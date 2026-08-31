@@ -1,4 +1,5 @@
 import { farmingRoadmap } from '../data/farmingRoadmap';
+import { getPoolRequirement, sanitizePoolChoices } from '../data/poolRequirements';
 import { getRecommendedSquad } from '../data/recommendedSquads';
 import { evaluateUnit, percent } from './unitProgress';
 import { buildSharedUnitMap, resolveBadge } from './sharedUnits';
@@ -13,10 +14,16 @@ export function buildRosterMap(playerData) {
   return rosterMap;
 }
 
-function mapSection(title, unitsList, phase, phaseIndex, sharedMap, rosterMap, recommended) {
+function mapSection(title, unitsList, context) {
+  const { phase, phaseIndex, sharedMap, rosterMap, recommended, selectedIds } = context;
   if (!unitsList || unitsList.length === 0) return null;
 
-  const units = unitsList.map((target) => {
+  const visibleUnits = selectedIds
+    ? unitsList.filter((target) => selectedIds.has(target.id))
+    : unitsList;
+  if (visibleUnits.length === 0) return null;
+
+  const units = visibleUnits.map((target) => {
     const targetId = target.id ? target.id.toUpperCase() : '';
     const unit = rosterMap[targetId];
     return {
@@ -42,14 +49,25 @@ export function buildDashboard(playerData, roadmap = farmingRoadmap) {
 
   const phases = roadmap.map((phase, phaseIndex) => {
     const recommended = getRecommendedSquad(phase);
+    const poolRequirement = getPoolRequirement(phase);
+    // A faction-pool phase lists every eligible unit, so the player's own squad
+    // choice is what the table reports on. Without a choice the whole pool shows.
+    const hasPoolChoice = poolRequirement && Array.isArray(phase.selectedUnitIds);
+    const selectedIds = hasPoolChoice
+      ? new Set(sanitizePoolChoices(phase, phase.selectedUnitIds))
+      : null;
+    const context = { phase, phaseIndex, sharedMap, rosterMap, recommended, selectedIds };
     const sections = [
-      mapSection('👤 CHARACTERS', phase.characters, phase, phaseIndex, sharedMap, rosterMap, recommended),
-      mapSection('🛸 SHIPS', phase.ships, phase, phaseIndex, sharedMap, rosterMap, recommended)
+      mapSection('👤 CHARACTERS', phase.characters, context),
+      mapSection('🛸 SHIPS', phase.ships, context)
     ].filter(Boolean);
 
     const allUnits = sections.flatMap((section) => section.units);
     const met = allUnits.filter((unit) => unit.progress.isComplete).length;
-    totalRequirements += allUnits.length;
+    // An unfinished choice still counts against the full squad size, so a
+    // half-picked event cannot read as complete.
+    const total = hasPoolChoice ? poolRequirement.count : allUnits.length;
+    totalRequirements += total;
     totalMetRequirements += met;
 
     return {
@@ -66,11 +84,18 @@ export function buildDashboard(playerData, roadmap = farmingRoadmap) {
         }
         : null,
       isC3po: phase.category.includes('C-3PO Event'),
+      poolChoice: hasPoolChoice
+        ? {
+          count: poolRequirement.count,
+          selectedCount: selectedIds.size,
+          label: poolRequirement.label
+        }
+        : null,
       sections,
       met,
-      total: allUnits.length,
-      percent: percent(met, allUnits.length),
-      done: allUnits.length > 0 && met === allUnits.length
+      total,
+      percent: percent(met, total),
+      done: total > 0 && allUnits.length === total && met === total
     };
   });
 

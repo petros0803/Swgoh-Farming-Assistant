@@ -3,6 +3,7 @@ import styled, { css } from 'styled-components';
 import { GEAR_LEVEL_FOR_RELICS } from '../data/gameRules';
 import { useFarmPreview } from '../hooks/useFarmPreview';
 import { requirementLabel, targetLabel } from '../utils/farmLabels';
+import PoolSquadPicker from './PoolSquadPicker';
 import ProgressTrack from './ui/ProgressTrack';
 import {
   FarmCardShell,
@@ -48,7 +49,7 @@ function relicGates(unit) {
   return gates;
 }
 
-export default function FarmingGuide({ guide }) {
+export default function FarmingGuide({ guide, onTogglePoolUnit }) {
   const [view, setView] = useState('queue');
   const [showCompletedUnits, setShowCompletedUnits] = useState(false);
   const [showAllQueue, setShowAllQueue] = useState(false);
@@ -56,6 +57,7 @@ export default function FarmingGuide({ guide }) {
   const [mapQuery, setMapQuery] = useState('');
   const [hideCompletedFarms, setHideCompletedFarms] = useState(true);
   const [hideCompletedUnits, setHideCompletedUnits] = useState(false);
+  const [editingSquad, setEditingSquad] = useState(null);
   const { preview, show: showPreview, hide: hidePreview } = useFarmPreview();
 
   const farmingTracks = guide.farmingTracks
@@ -382,8 +384,10 @@ export default function FarmingGuide({ guide }) {
                         </FarmDone>
                       )}
                       {!farm.isComplete && farm.rewardOwned && (
-                        <FarmCount>
-                          Unlocked · {farm.readyCount} / {farm.selectedCount} at target
+                        <FarmCount $ready={farm.readyToRun}>
+                          {farm.rewardRerun
+                            ? `${farm.rewardRerun.currentStars}★ · re-run for ${farm.rewardRerun.targetStars}★`
+                            : `Unlocked · ${farm.readyCount} / ${farm.selectedCount} at target`}
                         </FarmCount>
                       )}
                       {!farm.isComplete && !farm.rewardOwned && (
@@ -437,6 +441,14 @@ export default function FarmingGuide({ guide }) {
                       })}
                     </UnitCloud>
 
+                    {farm.rewardRerun && (
+                      <RerunNote>
+                        You own {farm.reward.name} at {farm.rewardRerun.currentStars}★ and the plan
+                        needs {farm.rewardRerun.targetStars}★. Those shards only come from running
+                        this event again, so its squad stays on the farming plan.
+                      </RerunNote>
+                    )}
+
                     {farm.isComplete && !farm.isRoot && (
                       <AllReadyNote>
                         You already have {farm.reward.name}, so this event is done and its
@@ -447,10 +459,45 @@ export default function FarmingGuide({ guide }) {
                     )}
 
                     {farm.isPool && (
-                      <PoolNote>
-                        Personalized fast squad: {farm.poolSize} selected from {farm.units.length}{' '}
-                        eligible units.
-                      </PoolNote>
+                      <PoolFooter>
+                        <PoolNote>
+                          {farm.poolChoiceIsUserPicked ? (
+                            <>
+                              Your chosen squad: {farm.selectedCount} of {farm.poolSize} picked from{' '}
+                              {farm.units.length} eligible units.
+                              {farm.selectedCount < farm.poolSize &&
+                                ` Pick ${farm.poolSize - farm.selectedCount} more to finish it.`}
+                            </>
+                          ) : (
+                            <>
+                              Personalized fast squad: {farm.poolSize} selected from{' '}
+                              {farm.units.length} eligible units.
+                            </>
+                          )}
+                        </PoolNote>
+                        {onTogglePoolUnit && (
+                          <SquadButton
+                            type="button"
+                            aria-expanded={editingSquad === farm.event}
+                            onClick={() => setEditingSquad(
+                              editingSquad === farm.event ? null : farm.event
+                            )}
+                          >
+                            {editingSquad === farm.event ? 'Done choosing' : 'Choose squad'}
+                          </SquadButton>
+                        )}
+                      </PoolFooter>
+                    )}
+
+                    {onTogglePoolUnit && editingSquad === farm.event && (
+                      <PoolSquadPicker
+                        units={farm.units}
+                        requirement={{ count: farm.poolSize, label: farm.poolLabel ?? 'units' }}
+                        rewardName={farm.reward.name}
+                        selectedUnitIds={[...farm.selectedIds]}
+                        onToggle={(unitId) =>
+                          onTogglePoolUnit(farm.event, unitId, [...farm.selectedIds])}
+                      />
                     )}
                   </FarmContent>
                 </FarmNode>
@@ -1029,6 +1076,46 @@ const AllReadyNote = styled.p`
   font-size: ${({ theme }) => theme.fontSizes.xs};
   font-weight: ${({ theme }) => theme.fontWeights.semibold};
   line-height: ${({ theme }) => theme.lineHeights.relaxed};
+`;
+
+const RerunNote = styled.p`
+  margin-top: ${({ theme }) => theme.space[7]};
+  color: ${({ theme }) => theme.colors.gold};
+  font-size: ${({ theme }) => theme.fontSizes.xs};
+  font-weight: ${({ theme }) => theme.fontWeights.semibold};
+  line-height: ${({ theme }) => theme.lineHeights.relaxed};
+`;
+
+const PoolFooter = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: ${({ theme }) => theme.space[6]};
+
+  ${({ theme }) => theme.media.phone} {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+`;
+
+const SquadButton = styled.button`
+  flex-shrink: 0;
+  margin-top: ${({ theme }) => theme.space[5]};
+  min-height: ${({ theme }) => theme.sizes.tap};
+  padding: ${({ theme }) => `${theme.space[3]} ${theme.space[7]}`};
+  background: ${({ theme }) => theme.colors.raised};
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: ${({ theme }) => theme.radii.pill};
+  color: ${({ theme }) => theme.colors.blue};
+  font: inherit;
+  font-size: ${({ theme }) => theme.fontSizes.xs};
+  font-weight: ${({ theme }) => theme.fontWeights.semibold};
+  cursor: pointer;
+
+  &:hover {
+    border-color: ${({ theme }) => theme.colors.borderStrong};
+    background: ${({ theme }) => theme.colors.hover};
+  }
 `;
 
 const PoolNote = styled.p`

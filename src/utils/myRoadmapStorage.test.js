@@ -1,7 +1,7 @@
 import {
-  loadMyRoadmapKeys,
+  loadMyRoadmap,
   MY_ROADMAP_STORAGE_KEY,
-  saveMyRoadmapKeys
+  saveMyRoadmap
 } from './myRoadmapStorage';
 
 describe('my roadmap storage', () => {
@@ -10,22 +10,50 @@ describe('my roadmap storage', () => {
   });
 
   it('saves and restores ordered, unique farm keys', () => {
-    saveMyRoadmapKeys(['Discarded Doctrine', 'Rebel with a cause']);
+    saveMyRoadmap({
+      farmKeys: ['Discarded Doctrine', 'Rebel with a cause'],
+      poolChoices: {}
+    });
 
-    expect(loadMyRoadmapKeys()).toEqual([
-      'Discarded Doctrine',
-      'Rebel with a cause'
-    ]);
+    expect(loadMyRoadmap()).toEqual({
+      farmKeys: ['Discarded Doctrine', 'Rebel with a cause'],
+      poolChoices: {}
+    });
+  });
+
+  it('saves and restores the squad picked for a faction-pool event', () => {
+    saveMyRoadmap({
+      farmKeys: ['Contact Protocol'],
+      poolChoices: {
+        'Contact Protocol': ['PAPLOO', 'WICKET', 'WICKET', 'LOGRAY']
+      }
+    });
+
+    expect(loadMyRoadmap().poolChoices).toEqual({
+      'Contact Protocol': ['PAPLOO', 'WICKET', 'LOGRAY']
+    });
+  });
+
+  it('reads a version 1 roadmap and leaves squad choices unset', () => {
+    window.localStorage.setItem(
+      MY_ROADMAP_STORAGE_KEY,
+      JSON.stringify({ version: 1, farmKeys: ['Contact Protocol'] })
+    );
+
+    expect(loadMyRoadmap()).toEqual({
+      farmKeys: ['Contact Protocol'],
+      poolChoices: {}
+    });
   });
 
   it('returns an empty roadmap for malformed or unsupported data', () => {
     window.localStorage.setItem(MY_ROADMAP_STORAGE_KEY, '{bad json');
-    expect(loadMyRoadmapKeys()).toEqual([]);
+    expect(loadMyRoadmap()).toEqual({ farmKeys: [], poolChoices: {} });
 
     window.localStorage.setItem(
       MY_ROADMAP_STORAGE_KEY,
-      JSON.stringify({ version: 2, farmKeys: ['Discarded Doctrine'] })
+      JSON.stringify({ version: 3, farmKeys: ['Discarded Doctrine'] })
     );
-    expect(loadMyRoadmapKeys()).toEqual([]);
+    expect(loadMyRoadmap()).toEqual({ farmKeys: [], poolChoices: {} });
   });
 });

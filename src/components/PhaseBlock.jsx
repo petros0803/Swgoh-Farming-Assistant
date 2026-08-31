@@ -26,6 +26,12 @@ export default function PhaseBlock({ phase, guide, expanded, onToggle }) {
       {expanded && (
         <Sections>
           {phase.note && <Note>{phase.note}</Note>}
+          {phase.poolChoice && (
+            <ChoiceNote $complete={phase.poolChoice.selectedCount === phase.poolChoice.count}>
+              Showing your farm squad: {phase.poolChoice.selectedCount} of {phase.poolChoice.count}{' '}
+              {phase.poolChoice.label} selected.
+            </ChoiceNote>
+          )}
           {phase.recommendation && (
             <RecommendedNote>
               <strong>★ marks the community-recommended squad</strong> ({phase.recommendation.count} units),
@@ -185,6 +191,16 @@ const Note = styled.p`
   border: 1px solid ${({ theme }) => theme.colors.sharedBorder};
   border-radius: ${({ theme }) => theme.radii.md};
   padding: ${({ theme }) => `${theme.space[6]} ${theme.space[8]}`};
+`;
+
+const ChoiceNote = styled.p`
+  color: ${({ theme, $complete }) => ($complete ? theme.colors.green : theme.colors.gold)};
+  background: ${({ theme }) => theme.colors.sunken};
+  border: 1px solid ${({ theme, $complete }) =>
+    $complete ? theme.colors.successBorder : theme.colors.recommendedBorder};
+  border-radius: ${({ theme }) => theme.radii.md};
+  padding: ${({ theme }) => `${theme.space[5]} ${theme.space[7]}`};
+  font-weight: ${({ theme }) => theme.fontWeights.semibold};
 `;
 
 const RecommendedNote = styled.p`
