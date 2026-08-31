@@ -10,7 +10,8 @@ export const SAVED_ALLY_CODES = ['497825748', '964559642'];
 const NAV_ITEMS = [
   { to: '/', label: '✨ Recommended Roadmap' },
   { to: '/my-roadmap', label: '🗺️ My Roadmap' },
-  { to: '/all-farms', label: '📜 All Farms' }
+  { to: '/all-farms', label: '📜 All Farms' },
+  { to: '/relic-calculator', label: '⚙️ Relic Calculator' }
 ];
 
 export default function Header({

@@ -6,6 +6,7 @@ import RosterProvider from './context/RosterProvider';
 import { useRosterState } from './context/rosterContext';
 import AllFarmsPage from './pages/AllFarmsPage';
 import MyRoadmapPage from './pages/MyRoadmapPage';
+import RelicCalculatorPage from './pages/RelicCalculatorPage';
 import RoadmapPage from './pages/RoadmapPage';
 import { ThemeRoot } from './theme';
 
@@ -46,6 +47,7 @@ function AppShell() {
           <Route path="/" element={<RoadmapPage />} />
           <Route path="/my-roadmap" element={<MyRoadmapPage />} />
           <Route path="/all-farms" element={<AllFarmsPage />} />
+          <Route path="/relic-calculator" element={<RelicCalculatorPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Main>
