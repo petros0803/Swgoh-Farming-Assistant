@@ -15,11 +15,11 @@ export default function Toolbar({
       <Row>
         <Field>
           <FieldIcon aria-hidden="true">🔍</FieldIcon>
-          <label className="sr-only" htmlFor="unitFilter">Filter units by name</label>
+          <label className="sr-only" htmlFor="journeyFilter">Filter journeys by name</label>
           <SearchField
             type="search"
-            id="unitFilter"
-            placeholder="Filter units by name…"
+            id="journeyFilter"
+            placeholder="Filter journeys by name…"
             value={query}
             onChange={(event) => onQueryChange(event.target.value)}
           />

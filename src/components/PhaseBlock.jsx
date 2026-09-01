@@ -2,18 +2,19 @@ import styled from 'styled-components';
 import InfoTip from './InfoTip';
 import UnitCard from './UnitCard';
 import ProgressTrack from './ui/ProgressTrack';
+import { farmDisplayCategory } from '../utils/farmLabels';
 import { C3PO_TIP_HTML } from '../utils/sharedUnits';
 
 export default function PhaseBlock({ phase, guide, expanded, onToggle }) {
   return (
     <Block>
-      <Toggle type="button" aria-expanded={expanded} onClick={onToggle}>
+      <Toggle type="button" aria-expanded={expanded} onClick={onToggle} title={phase.category}>
         <Title>
           <Chevron aria-hidden="true">▼</Chevron>
           {phase.reward?.icon && (
             <Portrait src={phase.reward.icon} alt={phase.reward.name} loading="lazy" />
           )}
-          {phase.category}
+          {farmDisplayCategory(phase.category)}
         </Title>
         <Meta>
           <TrackWrap>
@@ -31,6 +32,12 @@ export default function PhaseBlock({ phase, guide, expanded, onToggle }) {
               Showing your farm squad: {phase.poolChoice.selectedCount} of {phase.poolChoice.count}{' '}
               {phase.poolChoice.label} selected.
             </ChoiceNote>
+          )}
+          {!phase.poolChoice && phase.pool && (
+            <PoolNote>
+              Needs any {phase.pool.count} {phase.pool.label} — all {phase.pool.listed} eligible
+              units are listed below. You have {phase.pool.readyUnits} of them ready.
+            </PoolNote>
           )}
           {phase.recommendation && (
             <RecommendedNote>
@@ -191,6 +198,13 @@ const Note = styled.p`
   border: 1px solid ${({ theme }) => theme.colors.sharedBorder};
   border-radius: ${({ theme }) => theme.radii.md};
   padding: ${({ theme }) => `${theme.space[6]} ${theme.space[8]}`};
+`;
+
+const PoolNote = styled(Note)`
+  color: ${({ theme }) => theme.colors.gold};
+  background: ${({ theme }) => theme.colors.sunken};
+  border-color: ${({ theme }) => theme.colors.recommendedBorder};
+  font-weight: ${({ theme }) => theme.fontWeights.semibold};
 `;
 
 const ChoiceNote = styled.p`

@@ -23,6 +23,17 @@ describe('PhaseBlock', () => {
     expect(portrait).toHaveAttribute('src', '/assets/characters/JMLS.png');
   });
 
+  it('drops the kind of unlock from the row, keeping it on hover', () => {
+    renderWithTheme(<PhaseBlock phase={phase} expanded={false} onToggle={() => {}} />);
+
+    const label = screen.getByText('👑 Jedi Master Luke Skywalker');
+
+    expect(label.closest('button')).toHaveAttribute(
+      'title',
+      '👑 Galactic Legend: Jedi Master Luke Skywalker'
+    );
+  });
+
   it('renders the header without a portrait when the phase has no reward', () => {
     renderWithTheme(
       <PhaseBlock phase={{ ...phase, reward: null }} expanded={false} onToggle={() => {}} />

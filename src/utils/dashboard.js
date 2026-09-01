@@ -63,10 +63,13 @@ export function buildDashboard(playerData, roadmap = farmingRoadmap) {
     ].filter(Boolean);
 
     const allUnits = sections.flatMap((section) => section.units);
-    const met = allUnits.filter((unit) => unit.progress.isComplete).length;
-    // An unfinished choice still counts against the full squad size, so a
-    // half-picked event cannot read as complete.
-    const total = hasPoolChoice ? poolRequirement.count : allUnits.length;
+    const readyUnits = allUnits.filter((unit) => unit.progress.isComplete).length;
+    // A faction-pool event lists every eligible unit but only asks for a squad
+    // of a fixed size, so it is measured against that size. An unfinished
+    // choice still counts against it, so a half-picked event cannot read as
+    // complete.
+    const total = poolRequirement ? poolRequirement.count : allUnits.length;
+    const met = Math.min(readyUnits, total);
     totalRequirements += total;
     totalMetRequirements += met;
 
@@ -91,11 +94,19 @@ export function buildDashboard(playerData, roadmap = farmingRoadmap) {
           label: poolRequirement.label
         }
         : null,
+      pool: poolRequirement
+        ? {
+          count: poolRequirement.count,
+          label: poolRequirement.label,
+          listed: allUnits.length,
+          readyUnits
+        }
+        : null,
       sections,
       met,
       total,
       percent: percent(met, total),
-      done: total > 0 && allUnits.length === total && met === total
+      done: total > 0 && met === total
     };
   });
 

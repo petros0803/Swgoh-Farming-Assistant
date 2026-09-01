@@ -5,6 +5,7 @@ import Placeholder from '../components/ui/Placeholder';
 import { useRosterState } from '../context/rosterContext';
 import { allFarmsRoadmap } from '../data/allFarmsRoadmap';
 import { MAX_RELIC_LEVEL } from '../data/relicMaterials';
+import { sortFarmsByName } from '../utils/farmLabels';
 import {
   buildRosterCharacters,
   calculateJourneyPlan,
@@ -20,8 +21,10 @@ const characterCatalog = Array.from(
   ).values()
 );
 
-const relicJourneys = allFarmsRoadmap.filter((journey) =>
-  journey.characters?.some((character) => (character.targetR || 0) > 0)
+const relicJourneys = sortFarmsByName(
+  allFarmsRoadmap.filter((journey) =>
+    journey.characters?.some((character) => (character.targetR || 0) > 0)
+  )
 );
 
 export default function RelicCalculatorPage() {

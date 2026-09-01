@@ -42,7 +42,7 @@ describe('App', () => {
 
     expect(screen.getByText('9,123,456')).toBeInTheDocument();
     expect(screen.getByText('Admiral Piett')).toBeInTheDocument();
-    expect(screen.getByPlaceholderText('Filter units by name…')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Filter journeys by name…')).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Recommended Farming Guide' })).toBeInTheDocument();
   });
 
@@ -191,12 +191,39 @@ describe('App', () => {
     await user.click(screen.getByRole('link', { name: /all farms/i }));
 
     await waitFor(() => {
-      expect(screen.getByText(/Galactic Legend: Leia Organa/)).toBeInTheDocument();
+      expect(screen.getByText('👑 Leia Organa')).toBeInTheDocument();
     });
+
+    // Rows read as the unit they unlock; the kind of unlock waits on hover.
+    expect(screen.getByText('👑 Leia Organa').closest('button'))
+      .toHaveAttribute('title', '👑 Galactic Legend: Leia Organa');
 
     // The roster survives the route change, so stats stay rendered.
     expect(screen.getByText('Bogdan')).toBeInTheDocument();
-    expect(screen.getByText(/Journey: Grand Master Yoda/)).toBeInTheDocument();
+    expect(screen.getByText(/Grand Master Yoda \(Jedi pool\)/)).toBeInTheDocument();
+  });
+
+  it('filters the all farms page down to one journey', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    await user.type(screen.getByLabelText('Ally Code'), '123456789');
+    await user.click(screen.getByRole('button', { name: /sync roster/i }));
+    await waitFor(() => expect(screen.getByText('Bogdan')).toBeInTheDocument());
+
+    await user.click(screen.getByRole('link', { name: /all farms/i }));
+    await waitFor(() => expect(screen.getByText('👑 Leia Organa')).toBeInTheDocument());
+
+    await user.type(screen.getByPlaceholderText('Filter journeys by name…'), 'Jar Jar Binks');
+
+    expect(screen.getByText('⭐ Jar Jar Binks')).toBeInTheDocument();
+    expect(screen.queryByText('👑 Leia Organa')).not.toBeInTheDocument();
+
+    await user.click(screen.getByText('⭐ Jar Jar Binks'));
+
+    // The whole squad stays, rather than only the units whose names match.
+    expect(screen.getByText('Boss Nass')).toBeInTheDocument();
+    expect(screen.getByText('Gungan Phalanx')).toBeInTheDocument();
   });
 
   it('opens the static Assault Battles guide without syncing a roster', async () => {
@@ -294,7 +321,7 @@ describe('App', () => {
       expect(screen.getByText('Bogdan')).toBeInTheDocument();
     });
 
-    const phase = screen.getByText(/Journey: C-3PO/).closest('section');
+    const phase = screen.getByText(/⭐ C-3PO \(Ewok pool\)/).closest('section');
 
     expect(within(phase).getByText('0 / 5 Ready (0%)')).toBeInTheDocument();
     expect(within(phase).getByText(/Showing your farm squad: 5 of 5 Ewoks selected/))

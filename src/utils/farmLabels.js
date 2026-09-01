@@ -11,3 +11,21 @@ export function requirementLabel(target) {
   if (target?.targetR) gates.push(`relic ${target.targetR}`);
   return gates.join(' + ') || '7★';
 }
+
+/** Leading emoji, then the kind of unlock the category spells out. */
+const FARM_KIND_PREFIX = /^(\P{L}*)(?:Galactic Legend|Journey|Fleet Unlock):\s*/u;
+
+/**
+ * "🚀 Fleet Unlock: Executor" → "🚀 Executor". Rows are scanned by the unit
+ * they unlock, so the kind only earns its space in the row's hover title.
+ */
+export function farmDisplayCategory(category = '') {
+  return category.replace(FARM_KIND_PREFIX, '$1');
+}
+
+/** All Farms and the picker scan by unlock name, not Journey Guide order. */
+export function sortFarmsByName(farms) {
+  return [...farms].sort(
+    (a, b) => a.reward.name.localeCompare(b.reward.name) || a.event.localeCompare(b.event)
+  );
+}
