@@ -39,11 +39,35 @@ describe('player-picked faction-pool squads', () => {
     expect(phase.done).toBe(false);
   });
 
-  it('shows the whole pool when the player has made no choice', () => {
+  it('lists the whole pool but counts it against the squad size', () => {
     const [phase] = buildDashboard(emptyRoster, [contactProtocol]).phases;
+    const listed = phase.sections.flatMap((section) => section.units);
 
     expect(phase.poolChoice).toBeNull();
-    expect(phase.total).toBe(contactProtocol.characters.length);
+    expect(listed).toHaveLength(contactProtocol.characters.length);
+    expect(phase.total).toBe(5);
+    expect(phase.pool).toMatchObject({
+      count: 5,
+      label: 'Ewoks',
+      listed: contactProtocol.characters.length,
+      readyUnits: 0
+    });
+  });
+
+  it('caps a pool at the squad size once enough units are ready', () => {
+    const ready = contactProtocol.characters.slice(0, 6).map((character) => ({
+      data: { base_id: character.id, rarity: 7, relic_tier: 0, gear_level: 12 }
+    }));
+    const [phase] = buildDashboard(
+      { data: { name: 'Test' }, units: ready },
+      [contactProtocol]
+    ).phases;
+
+    expect(phase.pool.readyUnits).toBe(6);
+    expect(phase.met).toBe(5);
+    expect(phase.total).toBe(5);
+    expect(phase.percent).toBe(100);
+    expect(phase.done).toBe(true);
   });
 
   it('farms the chosen units in the guide instead of the automatic squad', () => {

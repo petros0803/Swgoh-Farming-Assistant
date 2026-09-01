@@ -49,4 +49,53 @@ describe('generated event requirements', () => {
       targetStars: 7
     });
   });
+
+  it('uses live gamedata ids for the newer Journey Guide farms', () => {
+    expect(unit('Jedi Knight Cal Kestis', 'MERRIN')).toMatchObject({
+      alignment: 'dark',
+      targetStars: 7
+    });
+    expect(unit('Bombad General', 'BOOMADIER')).toMatchObject({
+      targetR: 5,
+      targetStars: 6
+    });
+    expect(unit('The Price of Hope', 'DEDRAMEERO')).toMatchObject({
+      targetR: 6,
+      alignment: 'dark'
+    });
+    expect(unit('Web of Hate', 'VADERDUELSEND')).toMatchObject({
+      targetR: 6,
+      id: 'VADERDUELSEND'
+    });
+    expect(unit('One Must Destroy in Order to Create', 'SHINHATI')).toMatchObject({
+      targetR: 7
+    });
+  });
+
+  it('lists all five Relic 7 characters the Baylan Skoll event asks for', () => {
+    expect(farm('One Must Destroy in Order to Create').characters.map((c) => c.id)).toEqual([
+      'SHINHATI',
+      'MARROK',
+      'MORGANELSBETH',
+      'GRANDADMIRALTHRAWN',
+      'GREATMOTHERS'
+    ]);
+  });
+
+  // "The Price of Hope" lends two extra KX Security Droids on top of the one it
+  // requires, so being on the loan list cannot disqualify a unit on its own.
+  it('keeps a required unit the event also lends copies of', () => {
+    expect(unit('The Price of Hope', 'KXSECURITYDROID')).toMatchObject({
+      targetR: 6,
+      targetStars: 7
+    });
+  });
+
+  // Rotta the Hutt and Darth Jar Jar unlock through fully loaned squads, so
+  // there is nothing to farm for them.
+  it('leaves out events that are won with loaned units', () => {
+    const rewards = allFarmsRoadmap.map((entry) => entry.reward.name);
+    expect(rewards).not.toContain('Rotta the Hutt');
+    expect(rewards).not.toContain('Darth Jar Jar');
+  });
 });

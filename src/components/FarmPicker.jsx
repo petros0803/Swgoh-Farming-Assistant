@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { getPoolRequirement } from '../data/poolRequirements';
+import { sortFarmsByName } from '../utils/farmLabels';
 
 /** "👑 Galactic Legend: Leia Organa" → "Galactic Legend". */
 function farmKind(category = '') {
@@ -10,12 +11,6 @@ function farmKind(category = '') {
 function farmHint(farm) {
   const requirement = getPoolRequirement(farm);
   return requirement ? `Pick ${requirement.count} ${requirement.label}` : null;
-}
-
-function sortedByName(farms) {
-  return [...farms].sort(
-    (a, b) => a.reward.name.localeCompare(b.reward.name) || a.event.localeCompare(b.event)
-  );
 }
 
 /**
@@ -32,7 +27,7 @@ export default function FarmPicker({ farms, value, onChange }) {
   const listRef = useRef(null);
   const returnFocusRef = useRef(false);
 
-  const options = useMemo(() => sortedByName(farms), [farms]);
+  const options = useMemo(() => sortFarmsByName(farms), [farms]);
   const normalizedQuery = query.trim().toLowerCase();
   const visibleOptions = useMemo(
     () => (normalizedQuery

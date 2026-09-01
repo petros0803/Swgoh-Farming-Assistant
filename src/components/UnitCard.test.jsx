@@ -66,6 +66,26 @@ describe('UnitCard', () => {
     expect(screen.getByText('Ready')).toBeInTheDocument();
   });
 
+  it('still shows the relic requirement tag when the unit is missing from the roster', () => {
+    renderWithTheme(<UnitCard unit={{
+      ...unit,
+      progress: {
+        ...unit.progress,
+        currentStars: 0,
+        currentRelic: 0,
+        currentGear: 0,
+        isComplete: false,
+        statusText: 'Need 7★',
+        progressPct: 0,
+        statusClass: 'not-started',
+        inRoster: false
+      }
+    }} />);
+
+    expect(screen.getByText('Not in roster')).toBeInTheDocument();
+    expect(screen.getByText('R0 / 7')).toBeInTheDocument();
+  });
+
   it('tags a community-recommended unit alongside its shared tag', () => {
     renderWithTheme(<UnitCard unit={{ ...unit, recommended: true }} />);
 

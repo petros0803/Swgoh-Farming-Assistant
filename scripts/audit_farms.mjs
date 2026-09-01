@@ -9,7 +9,9 @@
  *   - faction-pool farms whose listed roster no longer matches the live faction
  *
  * Also diffs the hand-maintained farmingRoadmap.js against the generated
- * allFarmsRoadmap.js for the events they have in common.
+ * allFarmsRoadmap.js for the events they have in common, and checks both
+ * against the "Required:" / "Borrowed:" lists the game prints on each event
+ * tier, which is the only in-game statement of what a player must own.
  *
  * Run with: node scripts/audit_farms.mjs
  */
@@ -71,7 +73,9 @@ async function buildGameIndex() {
 
   const strings = loc.data ?? loc;
   const byBaseId = new Map();
+  const byName = new Map();
   const membersByCategory = new Map();
+  const membersByTag = new Map();
 
   for (const unit of units.data ?? units) {
     const baseId = unit.baseId;
@@ -87,6 +91,13 @@ async function buildGameIndex() {
       categories: unit.categoryId ?? []
     };
     byBaseId.set(baseId, entry);
+    if (!byName.has(normalize(name))) byName.set(normalize(name), entry);
+
+    for (const category of entry.categories) {
+      if (!category.startsWith('selftag_')) continue;
+      if (!membersByTag.has(category)) membersByTag.set(category, []);
+      membersByTag.get(category).push(entry);
+    }
 
     if (entry.categories.includes('any_obtainable')) {
       for (const category of entry.categories) {
@@ -106,7 +117,160 @@ async function buildGameIndex() {
     if (!factionByName.has(key)) factionByName.set(key, { id: category.id, label });
   }
 
-  return { byBaseId, factionByName, membersByCategory };
+  return { byBaseId, byName, factionByName, membersByCategory, membersByTag, strings };
+}
+
+/**
+ * Every event tier prints its entry conditions as coloured wiki-ish markup:
+ *   [c][23C8F5]Required:[-][/c]\n- Boss Nass (Relic Level 5 or higher)\n
+ *   [c][23C8F5]Borrowed:[-][/c]\n- R5-D4 (Era Level 135)\n
+ * Neither list is trustworthy alone: "Required" also names units the event
+ * hands out, and the entry gate also allows optional stand-ins the tier never
+ * asks for. A unit only counts as a farm target when the game both gates the
+ * tier on it and prints it as required.
+ */
+function tierSections(text) {
+  const sections = new Map();
+  const parts = text.split(/\[c\]\[23C8F5\]\s*([^[\]]+?):\s*\[-\]\[\/c\]/);
+  for (let i = 1; i < parts.length; i += 2) {
+    const label = parts[i].trim();
+    if (!sections.has(label)) sections.set(label, []);
+    sections.get(label).push(parts[i + 1] ?? '');
+  }
+  return sections;
+}
+
+/** "Cal Kestis (Gear XII+)" is one unit; "Bastila Shan (Fallen)" is another. */
+function resolveTierUnit(line, index) {
+  const cleaned = line.replace(/\[[^\]]*\]/g, '').replace(/^[-•]\s*/, '').trim();
+  const candidates = [cleaned, cleaned.replace(/\s*\([^()]*\)\s*$/, '')];
+  for (const candidate of candidates) {
+    const hit = index.byName.get(normalize(candidate));
+    if (hit) return hit;
+  }
+  return null;
+}
+
+async function buildEventRequirements(index) {
+  const [campaign, guide] = await Promise.all([
+    getJson(`${GAMEDATA}/campaign.json`),
+    getJson(`${GAMEDATA}/unitGuideDefinition.json`)
+  ]);
+
+  const nodes = new Map();
+  for (const entry of campaign.data ?? campaign) {
+    for (const map of entry.campaignMap ?? []) {
+      for (const group of map.campaignNodeDifficultyGroup ?? []) {
+        for (const node of group.campaignNode ?? []) {
+          nodes.set(`${entry.id}:${map.id}:${node.id}`, node);
+        }
+      }
+    }
+  }
+
+  const byReward = new Map();
+
+  for (const entry of guide.data ?? guide) {
+    if (entry.inPreview || entry.unitBaseId === 'TBA') continue;
+    const ref = entry.campaignElementIdentifier ?? {};
+    const node = nodes.get(`${ref.campaignId}:${ref.campaignMapId}:${ref.campaignNodeId}`);
+    if (!node) continue;
+
+    const gated = new Set();
+    const named = new Set();
+    const borrowed = new Set();
+
+    for (const mission of node.campaignNodeMission ?? []) {
+      const sections = tierSections(index.strings[mission.descKey] ?? '');
+      for (const [label, target] of [
+        ['Required', named],
+        ['Borrowed', borrowed]
+      ]) {
+        for (const body of sections.get(label) ?? []) {
+          for (const line of body.split(/\\n|\n/)) {
+            const unit = resolveTierUnit(line, index);
+            if (unit) target.add(unit.baseId);
+          }
+        }
+      }
+
+      // Only a per-unit "selftag_" gate names a specific unit; faction gates
+      // such as affiliation_republic are the pool farms, handled elsewhere.
+      const gate = mission.entryCategoryAllowed;
+      for (const tag of [...(gate?.categoryId ?? []), ...(gate?.commanderCategoryId ?? [])]) {
+        if (!tag.startsWith('selftag_')) continue;
+        for (const unit of index.membersByTag.get(tag) ?? []) gated.add(unit.baseId);
+      }
+      for (const mandatory of gate?.mandatoryRosterUnit ?? []) {
+        if (mandatory.id) gated.add(mandatory.id);
+      }
+    }
+
+    const required = new Set(
+      [...gated].filter((id) => id !== entry.unitBaseId && named.has(id) && !borrowed.has(id))
+    );
+
+    if (required.size > 0 || borrowed.size > 0) {
+      byReward.set(entry.unitBaseId, { required, borrowed });
+    }
+  }
+
+  return byReward;
+}
+
+function diffAgainstEventText(farms, requirementsByReward, index, source) {
+  const lines = [];
+  const unitsOf = (farm) => [...(farm.characters ?? []), ...(farm.ships ?? [])];
+
+  const farmByReward = new Map();
+  for (const farm of farms) {
+    const reward = index.byName.get(normalize(farm.reward?.name ?? ''));
+    if (reward) farmByReward.set(reward.baseId, farm);
+  }
+
+  /**
+   * A farm that asks for Jedi Knight Revan implicitly asks for his crew, since
+   * unlocking him is its own farm in this same roadmap. Walk those to avoid
+   * reporting units the player is already sent to farm.
+   */
+  const coverage = (farm, seen = new Set()) => {
+    const covered = new Set();
+    for (const unit of unitsOf(farm)) {
+      covered.add(unit.id);
+      const prerequisite = farmByReward.get(unit.id);
+      if (!prerequisite || seen.has(unit.id)) continue;
+      seen.add(unit.id);
+      for (const id of coverage(prerequisite, seen)) covered.add(id);
+    }
+    return covered;
+  };
+
+  for (const farm of farms) {
+    const reward = index.byName.get(normalize(farm.reward?.name ?? ''));
+    const event = reward && requirementsByReward.get(reward.baseId);
+    if (!event) continue;
+
+    const listed = unitsOf(farm);
+    const listedIds = coverage(farm);
+    const missing = [...event.required].filter((id) => !listedIds.has(id));
+    const allLoaned =
+      listed.length > 0 && listed.every((unit) => event.borrowed.has(unit.id) && !event.required.has(unit.id));
+
+    if (missing.length === 0 && !allLoaned) continue;
+
+    lines.push(`\n  [${source}] ${farm.category}`);
+    if (missing.length > 0) {
+      lines.push(
+        `    REQUIRED IN GAME, NOT LISTED: ` +
+          missing.map((id) => `${index.byBaseId.get(id)?.name ?? id} (${id})`).join(', ')
+      );
+    }
+    if (allLoaned) {
+      lines.push('    EVERY LISTED UNIT IS LOANED BY THE EVENT — nothing here is farmable');
+    }
+  }
+
+  return lines;
 }
 
 const problems = [];
@@ -307,6 +471,16 @@ async function main() {
   console.log('='.repeat(78));
   const diff = diffAgainstGenerated(personal, generated);
   console.log(diff.length === 0 ? 'Identical.' : diff.join('\n'));
+
+  console.log('\n' + '='.repeat(78));
+  console.log('ROADMAPS vs THE EVENT TEXT IN GAME');
+  console.log('='.repeat(78));
+  const requirementsByReward = await buildEventRequirements(index);
+  const textDiff = [
+    ...diffAgainstEventText(personal, requirementsByReward, index, 'personal'),
+    ...diffAgainstEventText(generated, requirementsByReward, index, 'all-farms')
+  ];
+  console.log(textDiff.length === 0 ? 'Nothing unaccounted for.' : textDiff.join('\n'));
 
   await rm(TMP, { recursive: true, force: true });
 }

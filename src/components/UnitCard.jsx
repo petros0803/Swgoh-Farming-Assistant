@@ -48,9 +48,9 @@ export default function UnitCard({ unit, guide, goalName }) {
       <Body>
         <Pills>
           {!progress.inRoster && <Pill>Not in roster</Pill>}
-          {progress.inRoster && target.targetR && (
+          {target.targetR && (
             <>
-              <Pill>G{progress.currentGear}</Pill>
+              {progress.inRoster && <Pill>G{progress.currentGear}</Pill>}
               <Pill $relic $met={progress.isComplete}>
                 R{progress.currentRelic} / {target.targetR}
               </Pill>
