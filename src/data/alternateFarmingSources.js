@@ -4,7 +4,7 @@
  * Appearance labels are qualitative because Capital Games does not publish
  * numerical shipment odds.
  */
-import { currencyIconPaths } from './currencyIcons';
+import { currencyIconPaths } from './currencyIcons.js';
 
 /**
  * Which currency each shipment spends. Generated wiki entries only know the

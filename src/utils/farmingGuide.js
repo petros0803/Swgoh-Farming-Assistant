@@ -176,7 +176,7 @@ export function buildFarmingGuide(
   const rewardFarmById = new Map();
 
   catalog.forEach((farm) => {
-    const rewardId = rewardIds.get(normalizedName(farm.reward?.name));
+    const rewardId = farm.reward?.id ?? rewardIds.get(normalizedName(farm.reward?.name));
     if (rewardId) rewardFarmById.set(rewardId, farm);
   });
 
@@ -224,7 +224,9 @@ export function buildFarmingGuide(
       category: source.category,
       reward: {
         ...source.reward,
-        id: rewardIds.get(normalizedName(source.reward?.name)) ?? `reward:${event}`
+        id: source.reward?.id ??
+          rewardIds.get(normalizedName(source.reward?.name)) ??
+          `reward:${event}`
       },
       isRoot,
       isPool,

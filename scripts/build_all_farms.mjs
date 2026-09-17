@@ -465,7 +465,10 @@ function serialize(phases) {
     if (phase.note) lines.push(`    note: ${JSON.stringify(phase.note)},`);
 
     const rewardIcon = phase.reward.icon;
-    const rewardFields = [`name: ${JSON.stringify(phase.reward.name)}`];
+    const rewardFields = [
+      `name: ${JSON.stringify(phase.reward.name)}`,
+      `id: ${JSON.stringify(phase.reward.id)}`
+    ];
     if (rewardIcon) rewardFields.push(`icon: \`\${${rewardIcon.dir}_PATH}${rewardIcon.file}\``);
     lines.push(`    reward: { ${rewardFields.join(', ')} },`);
 
@@ -613,7 +616,7 @@ function buildPhase({ title, source, expanded, reward, isGalacticLegend, index, 
     category: categoryLabel(reward, isGalacticLegend) + suffix,
     event: title,
     note: notes.join(' ') || null,
-    reward: { name: reward.name, icon: rewardIcon },
+    reward: { name: reward.name, id: reward.baseId, icon: rewardIcon },
     rewardBaseId: reward.baseId,
     isGalacticLegend,
     characters,
@@ -778,7 +781,7 @@ function buildPhaseFromGameData({ entry, node, index, assets, isGalacticLegend }
     note: announced
       ? 'Requirements come from the event announcement — the game only references its unlock quest by id.'
       : 'Requirements read from the event tiers in game, which is the only source for it so far.',
-    reward: { name: reward.name, icon: rewardIcon },
+    reward: { name: reward.name, id: reward.baseId, icon: rewardIcon },
     rewardBaseId: reward.baseId,
     isGalacticLegend,
     characters,

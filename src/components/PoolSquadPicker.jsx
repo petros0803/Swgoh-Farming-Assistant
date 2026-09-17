@@ -1,5 +1,6 @@
 import { useId, useState } from 'react';
 import styled from 'styled-components';
+import { acquisitionSummary } from '../utils/unitCatalog';
 
 /** Pools this long need a filter box to stay usable — Empire lists 44 units. */
 const FILTER_THRESHOLD = 12;
@@ -58,12 +59,16 @@ export default function PoolSquadPicker({
             <Option key={unit.id} $checked={checked}>
               <input
                 type="checkbox"
+                aria-label={unit.name}
                 checked={checked}
                 disabled={!checked && selected.size >= requirement.count}
                 onChange={() => onToggle(unit.id)}
               />
               {unit.icon && <Portrait src={unit.icon} alt="" loading="lazy" />}
-              <span>{unit.name}</span>
+              <UnitText>
+                <span>{unit.name}</span>
+                <small>{acquisitionSummary(unit.id, 1)}</small>
+              </UnitText>
             </Option>
           );
         })}
@@ -151,6 +156,19 @@ const Portrait = styled.img`
   height: 34px;
   border-radius: ${({ theme }) => theme.radii.sm};
   object-fit: cover;
+`;
+
+const UnitText = styled.span`
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+
+  small {
+    color: ${({ theme }) => theme.colors.muted};
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 `;
 
 const Empty = styled.p`

@@ -103,6 +103,14 @@ function SourceRows({ sources, kind, empty }) {
   );
 }
 
+export function AcquisitionSourceList({ sources, kind = 'character', empty }) {
+  return (
+    <SourceList>
+      <SourceRows sources={sources} kind={kind} empty={empty} />
+    </SourceList>
+  );
+}
+
 function priorityReason(unit) {
   if (unit.progress.isComplete) return 'Already ready';
   if (unit.acquisition.remainingShards === 0) {
@@ -136,9 +144,11 @@ function priorityReason(unit) {
 
 /** Events and journeys hand a unit over instead of dropping shards for it. */
 function unlockEvents(unit) {
-  return unit.acquisition.sources
-    .filter((source) => source.type === 'event' || source.type === 'journey')
-    .map((source) => source.label);
+  return [...new Set(
+    unit.acquisition.sources
+      .filter((source) => source.type === 'event' || source.type === 'journey')
+      .map((source) => source.label)
+  )];
 }
 
 /**
@@ -188,13 +198,11 @@ export function UnitFarmCard({ unit, guide, sources = unit.acquisition.sources, 
             <Fact>≤ {unit.acquisition.remainingShards} shards left</Fact>
           )}
         </FarmFacts>
-        <SourceList>
-          <SourceRows
-            sources={sources}
-            kind={unit.kind}
-            empty="No repeatable node or curated shipment source found."
-          />
-        </SourceList>
+        <AcquisitionSourceList
+          sources={sources}
+          kind={unit.kind}
+          empty="No repeatable node or curated shipment source found."
+        />
         {extras.length > 0 && (
           <AlsoFrom>
             <span>Also from</span>

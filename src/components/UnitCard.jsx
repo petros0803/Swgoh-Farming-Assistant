@@ -2,6 +2,7 @@ import { useState } from 'react';
 import styled, { css } from 'styled-components';
 import { useFarmPreview } from '../hooks/useFarmPreview';
 import { requirementLabel } from '../utils/farmLabels';
+import { acquisitionSummary } from '../utils/unitCatalog';
 import { MAX_STARS } from '../utils/unitProgress';
 import ProgressTrack from './ui/ProgressTrack';
 import SharedTag from './SharedTag';
@@ -60,6 +61,9 @@ export default function UnitCard({ unit, guide, goalName }) {
             <Pill>{progress.currentStars}★ / {target.targetStars}★</Pill>
           )}
         </Pills>
+        <FarmLocation>
+          <strong>Farm:</strong> {acquisitionSummary(unit.id)}
+        </FarmLocation>
         <ProgressTrack value={progress.progressPct} />
       </Body>
 
@@ -184,6 +188,16 @@ const Pills = styled.div`
   align-items: center;
   gap: ${({ theme }) => theme.space[3]};
   flex-wrap: wrap;
+`;
+
+const FarmLocation = styled.p`
+  color: ${({ theme }) => theme.colors.muted};
+  font-size: ${({ theme }) => theme.fontSizes.sm};
+  line-height: ${({ theme }) => theme.lineHeights.snug};
+
+  strong {
+    color: ${({ theme }) => theme.colors.text};
+  }
 `;
 
 const Pill = styled.span`

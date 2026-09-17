@@ -3,6 +3,7 @@ import styled, { css } from 'styled-components';
 import { GEAR_LEVEL_FOR_RELICS } from '../data/gameRules';
 import { useFarmPreview } from '../hooks/useFarmPreview';
 import { requirementLabel, targetLabel } from '../utils/farmLabels';
+import { acquisitionSummary } from '../utils/unitCatalog';
 import PoolSquadPicker from './PoolSquadPicker';
 import ProgressTrack from './ui/ProgressTrack';
 import {
@@ -229,6 +230,7 @@ export default function FarmingGuide({ guide, onTogglePoolUnit }) {
                         {unit.progress.currentStars}★ owned · needs{' '}
                         {guide.farmByEvent.get(unit.goalEvent)?.reward.name ?? unit.goalEvent}
                       </Reason>
+                      <Reason>Farm: {acquisitionSummary(unit.id)}</Reason>
                       <Gates>
                         {relicGates(unit).map((gate) => (
                           <Gate key={gate.key} $met={gate.met}>
@@ -337,6 +339,7 @@ export default function FarmingGuide({ guide, onTogglePoolUnit }) {
                     .map((event) => guide.farmByEvent.get(event)?.reward.name ?? event)
                     .join(', ')}.
                 </p>
+                <p>Farm: {acquisitionSummary(focusedUnit.id)}</p>
               </div>
               <ClearFocus type="button" onClick={() => setFocusedId(null)}>
                 Clear focus

@@ -67,7 +67,7 @@ describe('buildFarmingEstimate', () => {
     });
 
     expect(estimate.sources[0]).toMatchObject({
-      type: 'event',
+      type: 'journey',
       label: 'Contact Protocol'
     });
     expect(estimate.etaLabel).toBe('Complete the prerequisite journey');

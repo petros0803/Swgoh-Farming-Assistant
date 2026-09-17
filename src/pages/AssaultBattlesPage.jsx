@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import styled from 'styled-components';
+import { acquisitionSummary, unitPortrait } from '../utils/unitCatalog';
 import { assaultBattles } from '../data/assaultBattles';
 import { assaultBattleTeams } from '../data/assaultBattleTeams';
 import {
@@ -354,12 +355,16 @@ function TeamCard({ team, rank }) {
         {team.units.map((unit) => (
           <UnitPortrait key={unit.id}>
             <img
-              src={`${BASE}assets/characters/${encodeURIComponent(unit.name.replace(/[’']/g, ''))}.png`}
+              src={unitPortrait(unit.id) ??
+                `${BASE}assets/characters/${encodeURIComponent(unit.name.replace(/[’']/g, ''))}.png`}
               alt=""
               loading="lazy"
               onError={(event) => { event.currentTarget.style.visibility = 'hidden'; }}
             />
             <small>{unit.name}</small>
+            <FarmSource title={acquisitionSummary(unit.id)}>
+              {acquisitionSummary(unit.id, 1)}
+            </FarmSource>
           </UnitPortrait>
         ))}
       </PortraitRow>
@@ -792,6 +797,17 @@ const UnitPortrait = styled.div`
     font-size: ${({ theme }) => theme.fontSizes.xs};
     line-height: ${({ theme }) => theme.lineHeights.snug};
   }
+`;
+
+const FarmSource = styled.span`
+  display: -webkit-box;
+  margin-top: ${({ theme }) => theme.space[2]};
+  overflow: hidden;
+  color: ${({ theme }) => theme.colors.blue};
+  font-size: ${({ theme }) => theme.fontSizes.xs};
+  line-height: ${({ theme }) => theme.lineHeights.snug};
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 `;
 
 const Strategy = styled.p`
