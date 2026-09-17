@@ -78,7 +78,7 @@ describe('App', () => {
     await user.click(screen.getByRole('button', { name: /show completed units/i }));
     expect(within(guide).getAllByText('Admiral Piett').length).toBeGreaterThan(0);
 
-    expect(screen.getByText("Luke Skywalker Hero's Journey")).toBeInTheDocument();
+    expect(screen.getAllByText("Luke Skywalker Hero's Journey").length).toBeGreaterThan(0);
     expect(screen.getByText('Personalized fast squad: 5 selected from 44 eligible units.'))
       .toBeInTheDocument();
   });
@@ -249,7 +249,12 @@ describe('App', () => {
 
     await user.click(screen.getByRole('link', { name: /relic calculator/i }));
     expect(screen.getByRole('heading', { name: /plan one character/i })).toBeInTheDocument();
-    expect(screen.getByRole('option', { name: /Admiral Piett — R8/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Choose a character' })).toHaveTextContent('Admiral Piett');
+
+    await user.click(screen.getByRole('button', { name: 'Choose a character' }));
+    await user.type(screen.getByRole('combobox', { name: 'Choose a character' }), 'Admiral Piett');
+    expect(screen.getByRole('option', { name: /Admiral Piett Current R8 .* Character/i })).toBeInTheDocument();
+    await user.keyboard('{Escape}');
 
     await user.selectOptions(screen.getByText('Target relic level').parentElement.querySelector('select'), '10');
 
@@ -257,6 +262,12 @@ describe('App', () => {
     expect(screen.getAllByText('Relic 10').length).toBeGreaterThan(0);
     expect(screen.getAllByText('Corrupted Signal Data').length).toBeGreaterThan(0);
     expect(screen.getAllByText('Coaxial Servomotor').length).toBeGreaterThan(0);
+
+    await user.click(screen.getByRole('button', { name: 'Entire journey' }));
+    await user.click(screen.getByRole('button', { name: 'Choose a Journey Guide' }));
+    await user.type(screen.getByRole('combobox', { name: 'Choose a Journey Guide' }), 'Leia');
+    expect(screen.getByRole('listbox', { name: 'Journey Guides' })).toBeInTheDocument();
+    expect(screen.getAllByRole('option').length).toBeGreaterThan(0);
   });
 
   it('builds and persists a custom ordered roadmap', async () => {
@@ -348,7 +359,9 @@ describe('App', () => {
 
     await user.click(screen.getByRole('tab', { name: /interactive dependency map/i }));
 
-    const journey = screen.getByText('Contact Protocol').closest('article');
+    const journey = screen.getAllByText('Contact Protocol')
+      .map((element) => element.closest('article'))
+      .find((article) => article && within(article).queryByRole('button', { name: 'Choose squad' }));
     expect(within(journey).getByText(/Personalized fast squad: 5 selected/)).toBeInTheDocument();
 
     await user.click(within(journey).getByRole('button', { name: 'Choose squad' }));

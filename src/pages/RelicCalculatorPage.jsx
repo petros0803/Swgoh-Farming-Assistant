@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import ErrorBanner from '../components/ErrorBanner';
+import SearchPicker from '../components/SearchPicker';
 import Placeholder from '../components/ui/Placeholder';
 import { useRosterState } from '../context/rosterContext';
 import { allFarmsRoadmap } from '../data/allFarmsRoadmap';
@@ -12,20 +13,26 @@ import {
   calculateRelicPlan,
   materialRows
 } from '../utils/relicCalculator';
+import {
+  acquisitionSummary,
+  characterCatalog as canonicalCharacterCatalog,
+  unitPortrait
+} from '../utils/unitCatalog';
 
-const characterCatalog = Array.from(
-  new Map(
-    allFarmsRoadmap
-      .flatMap((journey) => journey.characters || [])
-      .map((character) => [character.id, character])
-  ).values()
-);
+const characterCatalog = canonicalCharacterCatalog.map((character) => ({
+  ...character,
+  icon: unitPortrait(character)
+}));
 
 const relicJourneys = sortFarmsByName(
   allFarmsRoadmap.filter((journey) =>
     journey.characters?.some((character) => (character.targetR || 0) > 0)
   )
 );
+
+function journeyKind(category = '') {
+  return category.split(':')[0].replace(/^[^\p{L}\p{N}]+/u, '').trim();
+}
 
 export default function RelicCalculatorPage() {
   const { roster, playerData, previewMode, error } = useRosterState();
@@ -149,13 +156,23 @@ function CharacterCalculator({
       <Controls>
         <Field>
           <span>Character</span>
-          <select value={characterId || selected.id} onChange={(event) => onCharacterChange(event.target.value)}>
-            {characters.map((character) => (
-              <option key={character.id} value={character.id}>
-                {character.name} — R{character.currentRelic}
-              </option>
-            ))}
-          </select>
+          <SearchPicker
+            options={characters.map((character) => ({
+              id: character.id,
+              name: character.name,
+              meta: `${character.gearLevel < 13 ? `Gear ${character.gearLevel} · ` : ''}Current R${character.currentRelic} · ${acquisitionSummary(character.id, 1)}`,
+              image: character.icon,
+              badge: 'Character',
+              searchText: `${character.name} ${character.id}`
+            }))}
+            value={characterId || selected.id}
+            onChange={onCharacterChange}
+            label="Choose a character"
+            placeholder="Choose a character…"
+            searchPlaceholder={`Search ${characters.length} characters…`}
+            listLabel="Characters"
+            emptyLabel="No character matches"
+          />
         </Field>
         <Field>
           <span>Target relic level</span>
@@ -174,6 +191,7 @@ function CharacterCalculator({
               {selected.gearLevel < 13 ? `Gear ${selected.gearLevel} · ` : ''}
               Current R{selected.currentRelic} → Target R{plan.targetLevel}
             </span>
+            <SourceSummary>Farm: {acquisitionSummary(selected.id)}</SourceSummary>
           </div>
         </CharacterSummary>
       </Controls>
@@ -225,13 +243,23 @@ function JourneyCalculator({ journeys, selectedIndex, onJourneyChange, journey, 
       <Controls>
         <Field $wide>
           <span>Journey Guide</span>
-          <select value={selectedIndex} onChange={(event) => onJourneyChange(event.target.value)}>
-            {journeys.map((entry, index) => (
-              <option key={`${entry.category}-${entry.event}`} value={index}>
-                {entry.category.replace(/^[^\p{L}\p{N}]+/u, '')}
-              </option>
-            ))}
-          </select>
+          <SearchPicker
+            options={journeys.map((entry, index) => ({
+              id: String(index),
+              name: entry.reward?.name || entry.category.replace(/^[^\p{L}\p{N}]+/u, ''),
+              meta: entry.event,
+              image: entry.reward?.icon,
+              badge: journeyKind(entry.category),
+              searchText: `${entry.reward?.name || ''} ${entry.event} ${entry.category}`
+            }))}
+            value={String(selectedIndex)}
+            onChange={(value) => onJourneyChange(Number(value))}
+            label="Choose a Journey Guide"
+            placeholder="Choose a journey…"
+            searchPlaceholder={`Search ${journeys.length} journeys…`}
+            listLabel="Journey Guides"
+            emptyLabel="No journey matches"
+          />
         </Field>
         <CharacterSummary>
           {journey.reward?.icon && <Portrait src={journey.reward.icon} alt="" />}
@@ -252,6 +280,7 @@ function JourneyCalculator({ journeys, selectedIndex, onJourneyChange, journey, 
             <div>
               <strong>{character.name}</strong>
               <span>R{character.currentRelic} → R{character.targetR}</span>
+              <SourceSummary>Farm: {acquisitionSummary(character.id)}</SourceSummary>
             </div>
             <JourneyStatus $complete={character.plan.levels.length === 0}>
               {character.plan.levels.length === 0 ? 'Ready' : `${character.plan.levels.length} levels`}
@@ -415,6 +444,11 @@ const CharacterSummary = styled.div`
 
   strong { color: ${({ theme }) => theme.colors.text}; }
   span { color: ${({ theme }) => theme.colors.muted}; font-size: ${({ theme }) => theme.fontSizes.sm}; }
+`;
+
+const SourceSummary = styled.span`
+  color: ${({ theme }) => theme.colors.blue} !important;
+  line-height: ${({ theme }) => theme.lineHeights.snug};
 `;
 
 const Portrait = styled.img`

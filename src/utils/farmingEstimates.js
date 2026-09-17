@@ -1,5 +1,4 @@
 import {
-  alternateFarmingSources,
   isRareAppearance,
   storeCurrency
 } from '../data/alternateFarmingSources';
@@ -8,6 +7,7 @@ import { FARMING_SOURCE_META, farmingSources } from '../data/farmingSources';
 const SHARDS_AT_STAR = [0, 10, 25, 50, 80, 145, 230, 330];
 
 function nodeDailyShards(source) {
+  if (!source.energy || !source.shardsPerDrop) return 0;
   const attempts = source.attemptsPerDay ??
     Math.floor(
       (FARMING_SOURCE_META.naturalCantinaEnergyPerDay +
@@ -44,10 +44,7 @@ function easeOf(estimatedDays, sources) {
  * not shards already banked toward the next star. Relic/gear time is separate.
  */
 export function buildFarmingEstimate(unitId, targetStars = 7, currentStars = 0, journey = null) {
-  const combinedSources = [
-    ...(farmingSources[unitId] ?? []),
-    ...(alternateFarmingSources[unitId] ?? [])
-  ];
+  const combinedSources = farmingSources[unitId] ?? [];
   const bySource = new Map();
   combinedSources.forEach((source) => {
     const key = `${source.type}:${source.label}`;
@@ -108,8 +105,10 @@ export function buildFarmingEstimate(unitId, targetStars = 7, currentStars = 0, 
 
 export function sourceDetail(source) {
   if (source.type.endsWith('-node')) {
-    const rate = source.accelerated ? '2 shards on a drop' : '1 shard on a drop';
-    return `${source.label} · ${source.energy} energy · ${rate}`;
+    const rate = source.shardsPerDrop
+      ? `${source.shardsPerDrop} ${source.shardsPerDrop === 1 ? 'shard' : 'shards'} on a drop`
+      : 'drop quantity not published';
+    return `${source.label}${source.energy ? ` · ${source.energy} energy` : ''} · ${rate}`;
   }
   if (source.type === 'store') {
     const currency = storeCurrency(source);

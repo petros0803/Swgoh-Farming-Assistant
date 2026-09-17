@@ -6,6 +6,7 @@ import Footer from './components/Footer';
 import RosterProvider from './context/RosterProvider';
 import { useRosterState } from './context/rosterContext';
 import AllFarmsPage from './pages/AllFarmsPage';
+import CharactersPage from './pages/CharactersPage';
 import MyRoadmapPage from './pages/MyRoadmapPage';
 import RelicCalculatorPage from './pages/RelicCalculatorPage';
 import RoadmapPage from './pages/RoadmapPage';
@@ -50,6 +51,8 @@ function AppShell() {
           <Route path="/" element={<RoadmapPage />} />
           <Route path="/my-roadmap" element={<MyRoadmapPage />} />
           <Route path="/all-farms" element={<AllFarmsPage />} />
+          <Route path="/characters" element={<CharactersPage />} />
+          <Route path="/ships" element={<CharactersPage kind="ship" />} />
           <Route
             path="/assault-battles"
             element={(
