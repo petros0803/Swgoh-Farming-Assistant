@@ -33,9 +33,23 @@ function currencyKey(currency) {
   return (CURRENCY_ALIASES[cleaned] ?? cleaned).replace(/s$/, '');
 }
 
-const iconPathByKey = new Map(
-  Object.entries(currencyIconPaths).map(([currency, file]) => [currencyKey(currency), file])
-);
+let storeCurrencies = STORE_CURRENCIES;
+
+function iconMap(paths) {
+  return new Map(
+    Object.entries(paths).map(([currency, file]) => [currencyKey(currency), file])
+  );
+}
+
+let iconPathByKey = iconMap(currencyIconPaths);
+
+export function replaceStoreCurrencies(next) {
+  if (next && typeof next === 'object') storeCurrencies = next;
+}
+
+export function replaceCurrencyIconPaths(paths) {
+  if (paths && typeof paths === 'object') iconPathByKey = iconMap(paths);
+}
 
 /** Appearance labels that mean "do not count on this showing up". */
 const RARE_APPEARANCES = new Set(['Low', 'Rare']);
@@ -46,7 +60,7 @@ export function isRareAppearance(source) {
 }
 
 export function storeCurrency(source) {
-  return source?.currency ?? STORE_CURRENCIES[source?.label] ?? source?.label;
+  return source?.currency ?? storeCurrencies[source?.label] ?? source?.label;
 }
 
 export function currencyIcon(source) {

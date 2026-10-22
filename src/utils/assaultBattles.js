@@ -1,4 +1,4 @@
-import { currencyIconPaths } from '../data/currencyIcons';
+import { getCatalog } from '../data/catalogState';
 
 export function filterAssaultBattles(events, query, selectedId = 'all') {
   const normalized = query.trim().toLowerCase();
@@ -84,8 +84,9 @@ export function rewardRuleLabel(group) {
 /** Label/value rows for the escalating cost of extra daily runs. */
 /** Game data names the currency in plural, the shared icon map in singular. */
 export function currencyIcon(currency) {
-  return currencyIconPaths[currency]
-    ?? currencyIconPaths[currency.replace(/s$/, '')]
+  const paths = getCatalog().currencyIconPaths;
+  return paths[currency]
+    ?? paths[currency.replace(/s$/, '')]
     ?? null;
 }
 

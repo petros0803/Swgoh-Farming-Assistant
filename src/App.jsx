@@ -4,6 +4,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import AuthProvider from './context/AuthProvider';
+import CatalogProvider from './context/CatalogProvider';
 import RosterProvider from './context/RosterProvider';
 import { useRosterState } from './context/rosterContext';
 import AllFarmsPage from './pages/AllFarmsPage';
@@ -50,23 +51,25 @@ function AppShell() {
         onPreviewModeChange={setPreviewMode}
       />
       <Main>
-        <Routes>
-          <Route path="/" element={<RoadmapPage />} />
-          <Route path="/my-roadmap" element={<MyRoadmapPage />} />
-          <Route path="/all-farms" element={<AllFarmsPage />} />
-          <Route path="/characters" element={<CharactersPage />} />
-          <Route path="/ships" element={<CharactersPage kind="ship" />} />
-          <Route
-            path="/assault-battles"
-            element={(
-              <Suspense fallback={<RouteLoading>Loading Assault Battles guide…</RouteLoading>}>
-                <AssaultBattlesPage />
-              </Suspense>
-            )}
-          />
-          <Route path="/relic-calculator" element={<RelicCalculatorPage />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
+        <CatalogProvider>
+          <Routes>
+            <Route path="/" element={<RoadmapPage />} />
+            <Route path="/my-roadmap" element={<MyRoadmapPage />} />
+            <Route path="/all-farms" element={<AllFarmsPage />} />
+            <Route path="/characters" element={<CharactersPage />} />
+            <Route path="/ships" element={<CharactersPage kind="ship" />} />
+            <Route
+              path="/assault-battles"
+              element={(
+                <Suspense fallback={<RouteLoading>Loading Assault Battles guide…</RouteLoading>}>
+                  <AssaultBattlesPage />
+                </Suspense>
+              )}
+            />
+            <Route path="/relic-calculator" element={<RelicCalculatorPage />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </CatalogProvider>
       </Main>
       <Footer />
     </>

@@ -4,8 +4,7 @@ import ErrorBanner from '../components/ErrorBanner';
 import SearchPicker from '../components/SearchPicker';
 import Placeholder from '../components/ui/Placeholder';
 import { useRosterState } from '../context/rosterContext';
-import { allFarmsRoadmap } from '../data/allFarmsRoadmap';
-import { MAX_RELIC_LEVEL } from '../data/relicMaterials';
+import { getCatalog } from '../data/catalogState';
 import { sortFarmsByName } from '../utils/farmLabels';
 import {
   buildRosterCharacters,
@@ -15,20 +14,8 @@ import {
 } from '../utils/relicCalculator';
 import {
   acquisitionSummary,
-  characterCatalog as canonicalCharacterCatalog,
   unitPortrait
 } from '../utils/unitCatalog';
-
-const characterCatalog = canonicalCharacterCatalog.map((character) => ({
-  ...character,
-  icon: unitPortrait(character)
-}));
-
-const relicJourneys = sortFarmsByName(
-  allFarmsRoadmap.filter((journey) =>
-    journey.characters?.some((character) => (character.targetR || 0) > 0)
-  )
-);
 
 function journeyKind(category = '') {
   return category.split(':')[0].replace(/^[^\p{L}\p{N}]+/u, '').trim();
@@ -36,10 +23,23 @@ function journeyKind(category = '') {
 
 export default function RelicCalculatorPage() {
   const { roster, playerData, previewMode, error } = useRosterState();
+  const { units, farms, maxRelicLevel } = getCatalog();
+  const characterCatalog = useMemo(
+    () => units
+      .filter((unit) => unit.kind === 'character')
+      .map((character) => ({ ...character, icon: unitPortrait(character) })),
+    [units]
+  );
+  const relicJourneys = useMemo(
+    () => sortFarmsByName(
+      farms.filter((journey) => journey.characters?.some((character) => (character.targetR || 0) > 0))
+    ),
+    [farms]
+  );
   const [mode, setMode] = useState('character');
   const characters = useMemo(
     () => buildRosterCharacters(roster, characterCatalog),
-    [roster]
+    [characterCatalog, roster]
   );
   const [characterId, setCharacterId] = useState('');
   const selectedCharacter = characters.find((character) => character.id === characterId)
@@ -52,9 +52,9 @@ export default function RelicCalculatorPage() {
     if (!selectedCharacter) return;
     setCharacterId(selectedCharacter.id);
     setTargetLevel((current) =>
-      Math.max(selectedCharacter.currentRelic, Math.min(MAX_RELIC_LEVEL, current))
+      Math.max(selectedCharacter.currentRelic, Math.min(maxRelicLevel, current))
     );
-  }, [selectedCharacter]);
+  }, [maxRelicLevel, selectedCharacter]);
 
   const characterPlan = useMemo(
     () => selectedCharacter
@@ -88,7 +88,7 @@ export default function RelicCalculatorPage() {
         <h2>Plan one character or a full Journey Guide</h2>
         <p>
           Costs start from your synced relic levels and include every scrap material,
-          Signal Data type, and credit cost through Relic {MAX_RELIC_LEVEL}.
+          Signal Data type, and credit cost through Relic {maxRelicLevel}.
         </p>
       </Hero>
 
@@ -178,7 +178,7 @@ function CharacterCalculator({
           <span>Target relic level</span>
           <select value={targetLevel} onChange={(event) => onTargetChange(event.target.value)}>
             {Array.from(
-              { length: MAX_RELIC_LEVEL - selected.currentRelic + 1 },
+              { length: getCatalog().maxRelicLevel - selected.currentRelic + 1 },
               (_, index) => selected.currentRelic + index
             ).map((level) => <option key={level} value={level}>Relic {level}</option>)}
           </select>

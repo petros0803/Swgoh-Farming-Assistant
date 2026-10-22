@@ -1,4 +1,4 @@
-import { farmingRoadmap } from '../data/farmingRoadmap';
+import { getCatalog } from '../data/catalogState';
 import { getPoolRequirement, sanitizePoolChoices } from '../data/poolRequirements';
 import { getRecommendedSquad } from '../data/recommendedSquads';
 import { evaluateUnit, percent } from './unitProgress';
@@ -40,7 +40,7 @@ function mapSection(title, unitsList, context) {
   return { title, units };
 }
 
-export function buildDashboard(playerData, roadmap = farmingRoadmap) {
+export function buildDashboard(playerData, roadmap = getCatalog().priorityFarms) {
   const rosterMap = buildRosterMap(playerData);
   const sharedMap = buildSharedUnitMap(roadmap);
 

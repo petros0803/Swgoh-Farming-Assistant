@@ -1,10 +1,10 @@
 import FarmDashboard from '../components/FarmDashboard';
-import { allFarmsRoadmap } from '../data/allFarmsRoadmap';
+import { getCatalog } from '../data/catalogState';
 import { sortFarmsByName } from '../utils/farmLabels';
 
-const farms = sortFarmsByName(allFarmsRoadmap);
-
 export default function AllFarmsPage() {
+  const farms = sortFarmsByName(getCatalog().farms);
+
   return (
     <FarmDashboard
       roadmap={farms}

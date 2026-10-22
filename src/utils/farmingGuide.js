@@ -1,5 +1,5 @@
-import { allFarmsRoadmap } from '../data/allFarmsRoadmap';
 import { storeCurrency } from '../data/alternateFarmingSources';
+import { getCatalog } from '../data/catalogState';
 import { isBountyHunterFleet } from '../data/factionPools';
 import { lightspeedTokenCovers } from '../data/gameRules';
 import {
@@ -166,7 +166,7 @@ function collectRootUseCount(roadmap) {
 export function buildFarmingGuide(
   playerData,
   roadmap,
-  catalog = allFarmsRoadmap,
+  catalog = getCatalog().farms,
   poolChoices = {}
 ) {
   const rosterMap = buildRosterMap(playerData);
