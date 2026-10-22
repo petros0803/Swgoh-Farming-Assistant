@@ -76,7 +76,11 @@ function asError(error, fallback) {
   if (error.code === '23514') {
     return new Error('That account does not meet the save rules.');
   }
-  return new Error(SAFE_DATABASE_MESSAGES[error.message] || fallback);
+  const message = String(error.message || '');
+  if (error.code === 'PGRST205' || error.code === '42P01' || /schema cache|does not exist/i.test(message)) {
+    return new Error('Saved accounts are not set up yet. Run supabase/player_accounts.sql in the Supabase SQL editor.');
+  }
+  return new Error(SAFE_DATABASE_MESSAGES[message] || fallback);
 }
 
 export async function listPlayerAccounts(client) {
