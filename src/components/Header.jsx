@@ -2,7 +2,9 @@ import { NavLink, useLocation } from 'react-router-dom';
 import Button from './ui/Button';
 import TextField from './ui/TextField';
 import ThemeSwitch from './ThemeSwitch';
+import AccountMenu from './AccountMenu';
 import styled from 'styled-components';
+import { useAuth } from '../context/authContext';
 import { normalizeAllyCode } from '../utils/format';
 
 export const SAVED_ALLY_CODES = ['497825748', '964559642'];
@@ -26,6 +28,9 @@ export default function Header({
   onPreviewModeChange
 }) {
   const { search } = useLocation();
+  const { ready, user, accounts, accountsLoading } = useAuth();
+  const signedIn = Boolean(user);
+  const waitingForAccounts = !ready || (signedIn && accountsLoading);
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -33,15 +38,30 @@ export default function Header({
   }
 
   function handleSavedCode(event) {
-    const code = event.target.value;
-    if (!code) return;
-    onAllyCodeChange(code);
-    onSync(code);
+    const value = event.target.value;
+    if (!value) return;
+
+    if (signedIn) {
+      const account = accounts.find((item) => item.id === value);
+      if (!account) return;
+      onAllyCodeChange(account.allyCode);
+      onSync(account.allyCode);
+      return;
+    }
+
+    onAllyCodeChange(value);
+    onSync(value);
   }
 
-  const savedSelection = SAVED_ALLY_CODES.includes(normalizeAllyCode(allyCode))
-    ? normalizeAllyCode(allyCode)
-    : '';
+  function handleUseAccount(account) {
+    onAllyCodeChange(account.allyCode);
+    onSync(account.allyCode);
+  }
+
+  const savedSelection = signedIn
+    ? accounts.find((account) => account.allyCode === normalizeAllyCode(allyCode))?.id || ''
+    : (SAVED_ALLY_CODES.includes(normalizeAllyCode(allyCode)) ? normalizeAllyCode(allyCode) : '');
+  const selectLabel = signedIn ? 'Saved accounts' : 'Saved ally codes';
 
   return (
     <Bar>
@@ -55,18 +75,24 @@ export default function Header({
         </Brand>
         <Actions>
           <ThemeCluster>
-            <label className="sr-only" htmlFor="savedAllyCode">Saved ally codes</label>
+            <label className="sr-only" htmlFor="savedAllyCode">{selectLabel}</label>
             <SavedSelect
               id="savedAllyCode"
-              value={savedSelection}
+              value={waitingForAccounts ? '' : savedSelection}
               onChange={handleSavedCode}
-              disabled={loading}
+              disabled={loading || waitingForAccounts}
             >
-              <option value="">Saved ally codes</option>
-              {SAVED_ALLY_CODES.map((code) => (
+              <option value="">{selectLabel}</option>
+              {!waitingForAccounts && signedIn && accounts.map((account) => (
+                <option key={account.id} value={account.id}>
+                  {account.name} ({account.allyCode})
+                </option>
+              ))}
+              {!waitingForAccounts && !signedIn && SAVED_ALLY_CODES.map((code) => (
                 <option key={code} value={code}>{code}</option>
               ))}
             </SavedSelect>
+            <AccountMenu currentAllyCode={allyCode} onUseAccount={handleUseAccount} />
             <ThemeSwitch />
           </ThemeCluster>
           <Form onSubmit={handleSubmit} autoComplete="off">
