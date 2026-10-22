@@ -1,4 +1,4 @@
-import { MAX_RELIC_LEVEL, RELIC_COST_BY_LEVEL, RELIC_MATERIALS } from '../data/relicMaterials';
+import { getCatalog } from '../data/catalogState';
 import { relicLevel } from './unitProgress';
 
 export function addMaterialCounts(...counts) {
@@ -11,12 +11,13 @@ export function addMaterialCounts(...counts) {
 }
 
 export function calculateRelicPlan(currentLevel, targetLevel) {
-  const current = Math.max(0, Math.min(MAX_RELIC_LEVEL, Number(currentLevel) || 0));
-  const target = Math.max(current, Math.min(MAX_RELIC_LEVEL, Number(targetLevel) || 0));
+  const { maxRelicLevel, relicCostByLevel } = getCatalog();
+  const current = Math.max(0, Math.min(maxRelicLevel, Number(currentLevel) || 0));
+  const target = Math.max(current, Math.min(maxRelicLevel, Number(targetLevel) || 0));
   const levels = [];
 
   for (let level = current + 1; level <= target; level += 1) {
-    levels.push({ level, materials: { ...RELIC_COST_BY_LEVEL[level] } });
+    levels.push({ level, materials: { ...relicCostByLevel[level] } });
   }
 
   return {
@@ -28,7 +29,7 @@ export function calculateRelicPlan(currentLevel, targetLevel) {
 }
 
 export function materialRows(counts) {
-  return RELIC_MATERIALS
+  return getCatalog().relicMaterials
     .filter((material) => counts?.[material.id] > 0)
     .map((material) => ({ ...material, amount: counts[material.id] }));
 }

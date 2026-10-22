@@ -17,8 +17,14 @@ export const POOL_REQUIREMENTS = {
   "Grand Master's Training": { count: 5, label: 'Jedi' }
 };
 
+let poolRequirements = POOL_REQUIREMENTS;
+
+export function replacePoolRequirements(next) {
+  if (next && typeof next === 'object') poolRequirements = next;
+}
+
 export function getPoolRequirement(farm) {
-  return farm?.event ? POOL_REQUIREMENTS[farm.event] ?? null : null;
+  return farm?.event ? poolRequirements[farm.event] ?? null : null;
 }
 
 export function getFarmUnits(farm) {

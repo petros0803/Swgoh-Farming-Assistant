@@ -31,6 +31,23 @@ export function minimumStarsForRelic(relicLevel) {
  */
 export const LIGHTSPEED_TOKEN_CEILING = { stars: 6, relic: 5 };
 
+let gearLevel = GEAR_LEVEL_FOR_RELICS;
+let lightspeedCeiling = LIGHTSPEED_TOKEN_CEILING;
+
+export function gearLevelForRelics() {
+  return gearLevel;
+}
+
+export function replaceCatalogRules({ gearLevelForRelics: nextGear, lightspeedTokenCeiling } = {}) {
+  if (Number.isInteger(nextGear)) gearLevel = nextGear;
+  if (Number.isInteger(lightspeedTokenCeiling?.stars) && Number.isInteger(lightspeedTokenCeiling?.relic)) {
+    lightspeedCeiling = {
+      stars: lightspeedTokenCeiling.stars,
+      relic: lightspeedTokenCeiling.relic
+    };
+  }
+}
+
 /**
  * True when a Lightspeed Token alone could satisfy this requirement, which
  * makes farming it early far less urgent than an equivalent ship.
@@ -41,5 +58,5 @@ export function lightspeedTokenCovers(kind, target) {
   const stars = target?.targetStars ?? 7;
   const relic = target?.targetR ?? 0;
 
-  return stars <= LIGHTSPEED_TOKEN_CEILING.stars && relic <= LIGHTSPEED_TOKEN_CEILING.relic;
+  return stars <= lightspeedCeiling.stars && relic <= lightspeedCeiling.relic;
 }

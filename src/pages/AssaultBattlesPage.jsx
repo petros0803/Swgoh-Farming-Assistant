@@ -1,8 +1,7 @@
 import { useMemo, useState } from 'react';
 import styled from 'styled-components';
+import { getCatalog } from '../data/catalogState';
 import { acquisitionSummary, unitPortrait } from '../utils/unitCatalog';
-import { assaultBattles } from '../data/assaultBattles';
-import { assaultBattleTeams } from '../data/assaultBattleTeams';
 import {
   assaultBattleStats,
   filterAssaultBattles,
@@ -17,15 +16,16 @@ import {
 } from '../utils/assaultBattles';
 
 const BASE = import.meta.env.BASE_URL;
-const STATS = assaultBattleStats(assaultBattles, assaultBattleTeams);
 
 export default function AssaultBattlesPage() {
+  const { assaultBattles, assaultBattleTeams } = getCatalog();
+  const stats = assaultBattleStats(assaultBattles, assaultBattleTeams);
   const [query, setQuery] = useState('');
   const [selectedId, setSelectedId] = useState('all');
   const [expandedIds, setExpandedIds] = useState(() => new Set([assaultBattles[0].id]));
   const visibleEvents = useMemo(
     () => filterAssaultBattles(assaultBattles, query, selectedId),
-    [query, selectedId]
+    [assaultBattles, query, selectedId]
   );
 
   function selectEvent(value) {
@@ -52,9 +52,9 @@ export default function AssaultBattlesPage() {
           recommended investment, and choose a proven squad for each event.
         </p>
         <Stats aria-label="Assault Battle catalog summary">
-          <Stat><strong>{STATS.events}</strong><span>events</span></Stat>
-          <Stat><strong>{STATS.tiers}</strong><span>tiers</span></Stat>
-          <Stat><strong>{STATS.teams}</strong><span>team guides</span></Stat>
+          <Stat><strong>{stats.events}</strong><span>events</span></Stat>
+          <Stat><strong>{stats.tiers}</strong><span>tiers</span></Stat>
+          <Stat><strong>{stats.teams}</strong><span>team guides</span></Stat>
         </Stats>
       </Hero>
 
@@ -112,6 +112,7 @@ export default function AssaultBattlesPage() {
             <EventSection
               key={event.id}
               event={event}
+              teams={assaultBattleTeams[event.id] ?? []}
               expanded={expandedIds.has(event.id)}
               onToggle={() => toggleEvent(event.id)}
             />
@@ -127,9 +128,8 @@ export default function AssaultBattlesPage() {
   );
 }
 
-function EventSection({ event, expanded, onToggle }) {
+function EventSection({ event, teams, expanded, onToggle }) {
   const squad = squadRequirement(event.tiers[0].gate);
-  const teams = assaultBattleTeams[event.id] ?? [];
   const finalTier = event.tiers.at(-1);
 
   return (

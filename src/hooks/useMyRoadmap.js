@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { allFarmsRoadmap } from '../data/allFarmsRoadmap';
+import { getCatalog } from '../data/catalogState';
 import {
   getDefaultPoolUnitIds,
   getPoolRequirement,
@@ -11,9 +11,7 @@ function farmKey(farm) {
   return farm.event;
 }
 
-const farmIndex = new Map(allFarmsRoadmap.map((farm) => [farmKey(farm), farm]));
-
-function initializeRoadmap() {
+function initializeRoadmap(farmIndex) {
   const stored = loadMyRoadmap();
   const poolChoices = { ...stored.poolChoices };
 
@@ -29,7 +27,12 @@ function initializeRoadmap() {
 }
 
 export function useMyRoadmap() {
-  const [config, setConfig] = useState(initializeRoadmap);
+  const farms = getCatalog().farms;
+  const farmIndex = useMemo(
+    () => new Map(farms.map((farm) => [farmKey(farm), farm])),
+    [farms]
+  );
+  const [config, setConfig] = useState(() => initializeRoadmap(farmIndex));
   const { farmKeys, poolChoices } = config;
 
   useEffect(() => {
@@ -46,13 +49,13 @@ export function useMyRoadmap() {
           : farm;
       })
       .filter(Boolean),
-    [farmKeys, poolChoices]
+    [farmIndex, farmKeys, poolChoices]
   );
 
   const availableFarms = useMemo(() => {
     const selected = new Set(farmKeys);
-    return allFarmsRoadmap.filter((farm) => !selected.has(farmKey(farm)));
-  }, [farmKeys]);
+    return farms.filter((farm) => !selected.has(farmKey(farm)));
+  }, [farmKeys, farms]);
 
   function addFarm(key) {
     if (!farmIndex.has(key)) return;

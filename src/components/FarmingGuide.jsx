@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import styled, { css } from 'styled-components';
-import { GEAR_LEVEL_FOR_RELICS } from '../data/gameRules';
+import { gearLevelForRelics } from '../data/gameRules';
 import { useFarmPreview } from '../hooks/useFarmPreview';
 import { requirementLabel, targetLabel } from '../utils/farmLabels';
 import { acquisitionSummary } from '../utils/unitCatalog';
@@ -38,11 +38,12 @@ function relicGates(unit) {
     met: remaining === 0
   }];
 
-  if (currentGear < GEAR_LEVEL_FOR_RELICS) {
+  const relicGear = gearLevelForRelics();
+  if (currentGear < relicGear) {
     gates.push({
       key: 'gear',
-      label: `Gear ${currentGear} / ${GEAR_LEVEL_FOR_RELICS}`,
-      note: 'relics unlock at G13',
+      label: `Gear ${currentGear} / ${relicGear}`,
+      note: `relics unlock at G${relicGear}`,
       met: false
     });
   }

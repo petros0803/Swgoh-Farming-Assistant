@@ -37,8 +37,14 @@ export const recommendedSquads = {
 };
 
 /** Returns the recommendation for a farm, or null when nobody has published one. */
+let activeSquads = recommendedSquads;
+
+export function replaceRecommendedSquads(next) {
+  if (next && typeof next === 'object') activeSquads = next;
+}
+
 export function getRecommendedSquad(phase) {
-  const entry = phase?.event ? recommendedSquads[phase.event] : null;
+  const entry = phase?.event ? activeSquads[phase.event] : null;
   if (!entry) return null;
 
   return {
