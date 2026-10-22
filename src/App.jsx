@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import AuthProvider from './context/AuthProvider';
 import RosterProvider from './context/RosterProvider';
 import { useRosterState } from './context/rosterContext';
 import AllFarmsPage from './pages/AllFarmsPage';
@@ -18,9 +19,11 @@ export default function App() {
   return (
     <ThemeRoot>
       <BrowserRouter basename={import.meta.env.BASE_URL}>
-        <RosterProvider>
-          <AppShell />
-        </RosterProvider>
+        <AuthProvider>
+          <RosterProvider>
+            <AppShell />
+          </RosterProvider>
+        </AuthProvider>
       </BrowserRouter>
     </ThemeRoot>
   );
