@@ -111,5 +111,8 @@ create trigger player_accounts_protect_row
 drop trigger if exists player_accounts_touch_updated_at on public.player_accounts;
 drop function if exists public.touch_player_account_updated_at();
 
--- Keep the trigger function off the public API. Triggers still run.
-revoke all on function public.protect_player_account_row() from public, anon, authenticated;
+-- The signed-in role must be allowed to execute this, or insert and update
+-- fail with "permission denied for function". PostgREST does not expose
+-- trigger functions as RPC. Anon stays blocked.
+revoke all on function public.protect_player_account_row() from public, anon;
+grant execute on function public.protect_player_account_row() to authenticated;

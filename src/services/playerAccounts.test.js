@@ -102,4 +102,23 @@ describe('player accounts', () => {
     await expect(listPlayerAccounts({ from: () => builder }))
       .rejects.toThrow('Could not load saved accounts.');
   });
+
+  it('explains a missing accounts table', async () => {
+    const builder = {
+      select() { return builder; },
+      order() { return builder; },
+      then(resolve) {
+        return resolve({
+          data: null,
+          error: {
+            code: 'PGRST205',
+            message: "Could not find the table 'public.player_accounts' in the schema cache"
+          }
+        });
+      }
+    };
+
+    await expect(listPlayerAccounts({ from: () => builder }))
+      .rejects.toThrow(/player_accounts\.sql/);
+  });
 });
